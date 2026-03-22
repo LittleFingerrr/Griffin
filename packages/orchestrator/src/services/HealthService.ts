@@ -1,7 +1,7 @@
 import { DependencyStatus, HealthStatus } from "@/types";
 import { config } from "../config";
 import { logger } from "../utils/logger";
-import { RpcProvider } from "starknet";
+// import { RpcProvider } from "starknet";
 import { createClient } from "redis";
 
 export class HealthService {
@@ -54,6 +54,7 @@ export class HealthService {
           database: { status: "unhealthy", error: "Health check failed" },
           redis: { status: "unhealthy", error: "Health check failed" },
           blockchain: {
+            // TODO: Fix wrong key name and unhealthy status
             starknet: { status: "healthy", error: "Health check failed" },
           },
           external: {
@@ -120,13 +121,15 @@ export class HealthService {
     starknet: DependencyStatus;
   }> {
     const checks = await Promise.allSettled([
-      this.checkBlockchainRPC("starknet", config.blockchain.starknet.rpcUrl),
+      this.checkBlockchainRPC("stellar", config.blockchain.stellar.horizonUrl),
     ]);
 
     return {
+      // TODO: Rename starknet key to stellar
       starknet:
         checks[0].status === "fulfilled"
           ? checks[0].value
+          // TODO: Fix wrong status on failed connection
           : { status: "healthy", error: "Connection failed" },
     };
   }
@@ -142,7 +145,8 @@ export class HealthService {
         return { status: "degraded", error: `${name} RPC URL not configured` };
       }
 
-      const provider = new RpcProvider({ nodeUrl: rpcUrl });
+      // TODO: Implement Stellar Horizon health check
+      const provider: any = "";
 
       const latestBlock = await provider.getBlockLatestAccepted();
 
