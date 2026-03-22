@@ -1,60 +1,141 @@
-The architecture follows an **Intent-Based Model**. The user expresses what they want to happen, and the service (the Orchestrator) ensures the destination protocol is satisfied.
+# Griffin
+
+**Pay with anything. Arrive in whatever is required.**
+
+Griffin is an open-source, intent-based payment protocol. It lets a user pay in any token they hold — and ensures the recipient receives exactly the token they require — without the user ever having to manually swap.
+
+> V1 is built on Stellar. Multichain expansion is on the roadmap.
 
 ---
 
-## High-Level Architecture: The "Griffin" Payment Flow
+## The Problem
 
-### 1. The Client-Side SDK (The Frontend)
+Crypto payments have a token mismatch problem. A dApp charges in USDC. A merchant wants XLM. An NFT costs a specific token you don't hold. Today, the user has to stop, go to an exchange, swap manually, return, and then complete the payment. That is too many steps.
 
-This is the library the dApp developer installs. It handles the "Discovery" phase.
-
-* **Balance Scanner:** Scans the user's wallet across multiple chains (Base, Polygon, Ethereum, etc.) to show them what they *can* pay with, if they don't have any coin in mind yet.
-* **Quote Engine:** Communicates with the server to get real-time exchange rates. "You want to pay 1000 $STRK? That will cost you 300 $BIRB from your Solana wallet."
-* **Signature Collector:** Instead of a "Transfer" transaction, the user signs a **Permit2** or an **EIP-712** message. This gives the service permission to move a specific amount of funds once.
-
-### 2. The Orchestration Layer (The "Middleman" Service)
-
-It’s a backend service (or a decentralized network of solvers) that acts as the brain.
-
-* **Pathfinder:** It looks at liquidity providers (LI.FI, 1inch, Uniswap) and bridges (Across, Stargate, Orbiter) to find the fastest route. One good route if there is a **Paymaster**, and exchange involves USDC, is to see if it is covered by the cross-chain USDC conversion - would be cheap.
-* **Transaction Bundler:** It constructs the "Call Data."
-* **Gas Relayer:** One of the biggest friction points is needing gas on the destination chain. Service pays the gas on the destination chain (e.g., Starknet) and charges the user an equivalent amount in the source token (e.g., $BIRD).
-
-### 3. The Settlement Layer (On-Chain)
-
-This consists of a "Gatekeeper" contract on the source chain and a "Receiver" on the destination.
-
-* **Source Vault:** Locked funds are pulled from the user via the signed intent.
-* **The Swap & Bridge:** The service triggers the swap to the target token and pushes it through a bridge.
-* **Atomic Completion:** The funds arrive at your "Middleman" contract on the target chain, which then instantly calls the `pay()` or `mint()` function on the final dApp.
+Griffin eliminates the mismatch. The user signs one intent. Griffin handles the conversion and completes the payment on their behalf — atomically.
 
 ---
 
-## Technical Component Breakdown
+## How It Works
 
-| Component | Responsibility | Technology Stack |
-| --- | --- | --- |
-| **Identity/Auth** | Connects wallets and maps addresses. | Wagmi / Viem / Starknet.js |
-| **Pricing API** | Aggregates prices from DEXs for the SDK UI. | 1inch API / Coingecko |
-| **Relayer Node** | Submits transactions to the chain. | Node.js / Go / Defender Relayer |
-| **Solver Logic** | Decides if it's cheaper to bridge or use a CEX liquidity pool. | Python / Rust (for speed) |
+Griffin follows an **Intent-Based Model**. The user expresses *what* they want to happen. Griffin ensures the destination payment is satisfied.
 
----
+### The Flow
 
-## The "Middleman" Transaction Flow (Example)
+1. **Quote** — The user indicates what they want to pay for and what token they hold. Griffin returns a quote: "You'll pay ~200 XLM to cover this 50 USDC payment."
+2. **Intent** — The user signs a single authorization. No manual swap. No extra steps.
+3. **Execution** — Griffin routes the payment through Stellar's native DEX (SDEX) using a `path_payment_strict_receive` operation. The conversion and payment happen atomically in one transaction.
+4. **Settlement** — The recipient receives exactly what they asked for. The user spent exactly what they agreed to.
 
-1. **Request:** User on a Starknet dApp wants to buy an NFT for **50 STRK**. They only have **USDC on Arbitrum**.
-2. **Intent:** The SDK generates a "Payment Intent." The user signs one message.
-3. **Extraction:** The Software Service detects the signature, triggers a transaction on Arbitrum to pull the USDC into your "Transit Vault."
-4. **Conversion:** The service uses a bridge (like Across) to send the value to Starknet.
-5. **Execution:** Once the value hits Starknet, the service (which holds a reserve of STRK for speed) immediately pays the 50 STRK to the NFT contract on behalf of the user.
-6. **Reconciliation:** Your service settles its own books using the USDC that just arrived from the bridge.
-
-> **Key Advantage:** The user doesn't wait for the bridge (which can take minutes). Because your "Middleman" service acts as a liquidity provider, the payment feels **instant** to the dApp.
+If the transaction cannot be completed within the agreed parameters (e.g. slippage exceeded), it reverts entirely. No funds are lost.
 
 ---
 
-### Potential Roadblocks to Consider
+## Architecture
 
-* **Slippage:** Crypto prices move fast. If the price of STRK jumps while the bridge is processing, the USDC you took might not be enough. You'll need a "Slippage Buffer" or a way to ask the user for a maximum cap.
-* **Trust:** Users (and dApps) need to know the middleman won't just keep the USDC. Using **Atomic Swaps** or **Escrow Contracts** ensures that the funds are only released if the destination payment is confirmed.
+Griffin is a monorepo with three layers:
+```
+Griffin/
+├── packages/
+│   ├── orchestrator/     # Backend service: intent processing, routing, execution
+│   ├── sdk/              # (Planned) Client-side SDK for dApp developers
+│   └── contracts/        # (Planned) On-chain escrow and settlement contracts
+└── docs/                 # Architecture docs and decisions
+```
+
+### Core Services (Orchestrator)
+
+| Service | Responsibility |
+|---|---|
+| `IntentService` | Creates, validates, and manages payment intents |
+| `RouteService` | Finds the best conversion path via SDEX |
+| `ChainService` | Manages supported chains and tokens |
+
+### Technology Stack (V1 — Stellar)
+
+| Component | Technology |
+|---|---|
+| Chain | Stellar (Testnet → Mainnet) |
+| Swap / Routing | Stellar SDEX — `path_payment_strict_receive` |
+| Wallet Integration | Freighter |
+| Orchestrator | Node.js / TypeScript |
+| Asset Standard | Stellar Asset Contract (SAC) — native USDC |
+
+---
+
+## Why Stellar First
+
+Stellar has unique primitives that make Griffin's core promise — atomic, single-step cross-asset payments — achievable without complex bridging infrastructure:
+
+- **Path Payments** are native to the protocol. Swap and pay in one transaction. If any leg fails, everything reverts.
+- **SDEX** provides on-chain liquidity for major asset pairs without needing external DEX integrations.
+- **Native USDC** is issued by Circle directly on Stellar — no wrapped tokens, no bridge risk.
+- **3–5 second finality** means payments feel instant.
+
+---
+
+## Roadmap
+
+- [x] Orchestrator architecture and intent model
+- [x] Chain-agnostic type system
+- [ ] Stellar SDEX path payment integration
+- [ ] Freighter wallet connection
+- [ ] Quote engine (SDEX route discovery)
+- [ ] Slippage buffer and intent expiry logic
+- [ ] Client-side SDK (`@griffin/sdk`)
+- [ ] Testnet demo: pay in XLM, recipient receives USDC
+- [ ] Fee engine
+- [ ] Soroban escrow contract (claimable balance escrow)
+- [ ] Multichain expansion (EVM chains via bridge)
+
+---
+
+## Contributing
+
+Griffin is open source and actively looking for contributors. It is listed on [Drips](https://drips.network) for open-source funding.
+
+### Getting Started
+```bash
+# Clone the repo
+git clone https://github.com/LittleFingerrr/Griffin.git
+cd Griffin
+
+# Install dependencies
+pnpm install
+
+# Set up environment variables
+cp packages/orchestrator/.env.example packages/orchestrator/.env
+
+# Run the orchestrator
+cd packages/orchestrator
+pnpm dev
+```
+
+### Good First Issues
+
+Look for issues tagged `good first issue` in the GitHub Issues tab. Each issue has a scoped description, acceptance criteria, and relevant files listed so you can get started without needing to understand the entire codebase.
+
+### Guidelines
+
+- TypeScript throughout — strict mode enabled
+- One concern per service — keep `IntentService`, `RouteService`, and `ChainService` focused
+- Tests required for any logic touching funds or routing
+- Open a discussion issue before starting large features
+
+---
+
+## Architecture Decisions
+
+Key decisions are documented in `docs/`. Before contributing to core routing or fee logic, read:
+
+- `docs/slippage-policy.md` — how Griffin handles price movement during execution
+- `docs/fee-model.md` — how Griffin charges for conversions
+- `docs/intent-lifecycle.md` — full state machine for a payment intent
+
+> These documents are works in progress and contributions to them are welcome.
+
+---
+
+## License
+
+MIT — see [LICENSE](./LICENSE).
