@@ -50,6 +50,7 @@ router.post(
 
     const response: QuoteResponse = {
       routes,
+      serviceId: routes[0].serviceId,
       bestRoute: routes[0], // Routes are sorted by cost
       timestamp: new Date().toISOString(),
       expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(), // 5 minutes
