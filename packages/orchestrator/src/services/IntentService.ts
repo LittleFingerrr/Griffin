@@ -3,8 +3,8 @@ import { Intent, IntentStatus, CreateIntentRequest, QuoteRequest } from "../type
 import { AppError } from "../middleware/errorHandler";
 import { logger } from "../utils/logger";
 import { ChainService } from "./ChainService";
-import { validateAndParseAddress } from "starknet";
-import { executeAvnuSwap, validateAddress, validateSignature } from "@/utils/utils";
+// import { validateAndParseAddress } from "starknet";
+import { executeStellarSwap, validateAddress, validateSignature } from "@/utils/utils";
 import { RouteService } from "./RouteService";
 
 const routeService = new RouteService();
@@ -92,7 +92,7 @@ export class IntentService {
     // TODO: IMPLEMENT MORE ROBUST LOGIC FOR SELECTING BEST ROUTE
     const selectedRoute = bestRoutes[0];
 
-    // TODO: RECONFIGURE TYPES SO THAT YOU CAN EASILY DO WHAT YOU ARE DOING
+    // TODO: Replace executeAvnuSwap with Stellar swap
     // @ts-expect-error
     const {} = executeAvnuSwap(selectedRoute);
 
@@ -217,6 +217,7 @@ export class IntentService {
       request.requestMessage,
       request.userAddress,
     );
+    // TODO: Use isValidSignature result, not duplicate check
     if (!request.requestSignature) {
       throw new AppError("Invalid signature", 400, "MISSING_SIGNATURE");
     }

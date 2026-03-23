@@ -1,4 +1,3 @@
-import { Signature, TypedData } from "starknet";
 
 export interface Intent {
   id: string;
@@ -92,9 +91,9 @@ export interface FeeInfo {
   total: string;
 }
 
-export type SignatureType = Signature | any;
+export type SignatureType = Buffer | string;
 
-export type IntentMessageType = TypedData | any;
+export type IntentMessageType = Buffer | string | Record<string, unknown>;
 
 export interface CreateIntentRequest {
   fromChain: ChainInfo['chainId'];
@@ -173,6 +172,7 @@ export interface HealthStatus {
   dependencies: {
     database: DependencyStatus;
     redis: DependencyStatus;
+    // TODO: Update blockchain health key to stellar
     blockchain: {
       starknet: DependencyStatus;
     };

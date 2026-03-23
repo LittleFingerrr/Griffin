@@ -1,24 +1,18 @@
 import { config } from "@/config";
 import { IntentMessageType, SignatureType, QuoteRequest } from "@/types";
-import { executeSwap, fetchTokens, getQuotes, Quote, Token } from "@avnu/avnu-sdk";
-import { parseUnits } from "ethers";
 import {
-    Account,
-  AccountInterface,
-  RpcProvider,
-  Signature,
-  TypedData,
-  validateAndParseAddress,
-} from "starknet";
+  Keypair,
+  StrKey,
+  rpc,
+} from "@stellar/stellar-sdk";
 
-const validateStarknetAddress = (address: string): boolean => {
-  const isValid = !!validateAndParseAddress(address);
-  return isValid;
+const validateStellarAddress = (address: string): boolean => {
+  return StrKey.isValidEd25519PublicKey(address);
 };
 
 export const validateAddress = (chainId: string, address: string): boolean => {
-  if (chainId.startsWith("starknet")) {
-    return validateStarknetAddress(address);
+  if (chainId.startsWith("stellar")) {
+    return validateStellarAddress(address);
   }
 
   // EVMs would be: if chainId.startsWith(eip155);
@@ -26,35 +20,29 @@ export const validateAddress = (chainId: string, address: string): boolean => {
   return false;
 };
 
-// TODO: Implement Signature Validation for Starknet
-const validateStarknetSignature = async (
-  signature: Signature,
-  message: TypedData,
-  userAddress: string | `0x${string}`,
+const validateStellarSignature = async (
+  signature: Buffer,
+  message: Buffer,
+  userAddress: string,
 ): Promise<boolean> => {
-  const provider = new RpcProvider({
-    nodeUrl: config.blockchain.starknet.rpcUrl,
-  });
-
-  const verifyResponse = await provider.verifyMessageInStarknet(
-    message,
-    signature,
-    userAddress,
-  );
-
-  return verifyResponse;
+  try {
+    const keypair = Keypair.fromPublicKey(userAddress);
+    return keypair.verify(message, signature);
+  } catch {
+    return false;
+  }
 };
 
 export const validateSignature = async (
   chainId: string,
   signature: SignatureType,
   message: IntentMessageType,
-  userAddress: string | `0x${string}`,
+  userAddress: string,
 ): Promise<boolean> => {
-  if (chainId.startsWith("starknet")) {
-    return await validateStarknetSignature(
-      signature as Signature,
-      message as TypedData,
+  if (chainId.startsWith("stellar")) {
+    return await validateStellarSignature(
+      signature as Buffer,
+      message as Buffer,
       userAddress,
     );
   }
@@ -62,84 +50,32 @@ export const validateSignature = async (
   return false;
 };
 
-export const getStarknetTokens = async (): Promise<Token[]> => {
-    const tokens = await fetchTokens({
-        tags: ['Verified', 'AVNU'],
-        page: 0,
-        size: 200
-    });
+// TODO: Implement Stellar token fetching (e.g. from Stellar Asset List or Soroban token registry)
+export const getStellarTokens = async (): Promise<unknown[]> => {
+  throw new Error("Stellar token fetching not yet implemented");
+};
 
-    return tokens.content;
-}
+// TODO: Implement Stellar quote fetching (e.g. Stellar DEX path payment or Soroban AMM)
+export const getTokenQuotes = async (_request: QuoteRequest): Promise<unknown[]> => {
+  throw new Error("Stellar quote fetching not yet implemented");
+};
 
-const getStarknetTokensQuotes = async (request: QuoteRequest): Promise<Quote[]> => {
-    const quotes = await getQuotes({
-        sellTokenAddress: request.fromToken,
-        buyTokenAddress: request.toToken,
-        sellAmount: parseUnits(`${request.amount}`),
-    })
+// TODO: Implement Stellar swap execution using Soroban / Stellar DEX path payments
+export const executeStellarSwap = async (): Promise<string> => {
+  const { accountAddress, secretKey, rpcUrl } = config.blockchain.stellar;
 
-    return quotes;
-}
-
-export const getTokenQuotes = async (request: QuoteRequest) => {
-    if (request.fromChain.startsWith('starknet')) {
-        return getStarknetTokensQuotes(request);
-    }
-
-    return [];
-}
-
-export function calculateAvnuEstimatedOutput(quote: Quote, routePercent: number): string {
-  // Calculate this route's portion of the total buy amount
-  if (routePercent === 100) {
-    return quote.buyAmount.toString();
+  if (!accountAddress || !secretKey || !rpcUrl) {
+    throw new Error("Env variables not configured");
   }
-  // For split routes, calculate proportional output
-  const proportion = Number(routePercent) / 100;
-  const output = quote.buyAmount * BigInt(Math.floor(proportion * 10000)) / 10000n;
-  return output.toString();
-}
 
-export function calculateAvnuTotalCost(quote: Quote, routePercent: number): string {
-  // Total cost = fees + gas + price impact
-  const fees = quote.fee.avnuFees + quote.fee.integratorFees;
-  const gas = quote.gasFees;
-  
-  // Adjust for route percentage if split
-  if (routePercent === 100) {
-    return (fees + gas).toString();
-  }
-  
-  const proportion = Number(routePercent) / 100;
-  const adjustedFees = fees * BigInt(Math.floor(proportion * 10000)) / 10000n;
-  const adjustedGas = gas * BigInt(Math.floor(proportion * 10000)) / 10000n;
-  
-  return (adjustedFees + adjustedGas).toString();
-}
+  const server = new rpc.Server(rpcUrl);
+  const keypair = Keypair.fromSecret(secretKey);
 
-export const executeAvnuSwap = async (quote: Quote): Promise<string> => {
-    const { accountAddress, privateKey, rpcUrl } = config.blockchain.starknet;
+  // Griffin account used to execute swaps after payment confirmation
+  const account = await server.getAccount(accountAddress);
 
-    if (!accountAddress || !privateKey || !rpcUrl) {
-        throw new Error("Env variables not configured")
-    }
+  void keypair;
+  void account;
 
-    const provider = new RpcProvider({ nodeUrl: config.blockchain.starknet.rpcUrl });
-
-    // The account we will use here has to be Griffin Account
-    // We will confirm Griffin has received the payment, then use Griffin Account to execute these ones
-    const account = new Account({
-        address: accountAddress,
-        signer: privateKey,
-        provider
-    })
-
-    const { transactionHash } = await executeSwap({
-        provider: account,
-        quote,
-        slippage: 0.005
-    });
-
-    return transactionHash
-}
+  throw new Error("Stellar swap not yet implemented");
+};

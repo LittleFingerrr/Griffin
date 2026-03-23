@@ -1,6 +1,6 @@
 import { ChainInfo, TokenInfo } from "../types";
 import { AppError } from "../middleware/errorHandler";
-import { getStarknetTokens } from "@/utils/utils";
+import { getStellarTokens } from "@/utils/utils";
 
 export class ChainService {
   /* 
@@ -8,13 +8,13 @@ export class ChainService {
   */
   private static supportedChains: ChainInfo[] = [
     {
-      chainId: "starknet:sepolia",
-      name: "Starknet",
-      symbol: "Starknet",
-      rpcUrl: "",
-      blockExplorer: "",
-      isTestnet: true,
-    },
+      chainId: "stellar:testnet",
+      name: "Stellar",
+      symbol: "Stellar",
+      rpcUrl: "https://horizon-testnet.stellar.org",
+      blockExplorer: "https://stellar.expert/explorer/testnet",
+      isTestnet: true
+    }
   ];
 
   private supportedTokens: TokenInfo[]
@@ -22,13 +22,15 @@ export class ChainService {
   constructor () {
     this.supportedTokens = [];
 
-    getStarknetTokens()
+    // TODO: Handle token fetch errors in constructor
+    getStellarTokens()
       .then((tokens) => {
-        tokens.forEach((token) => {
+        tokens.forEach((token: any) => {
           const equivGriffinToken = {
             address: token.address,
             decimals: token.decimals,
             logoUrl: token.logoUri!,
+            // TODO: Fix hardcoded wrong chainId here
             chainId: 'starknet:sepolia', // Change this when deploying to mainnet
             name: token.name,
             symbol: token.symbol

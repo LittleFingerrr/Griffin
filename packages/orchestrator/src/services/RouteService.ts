@@ -7,7 +7,7 @@ import {
 } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { logger } from "../utils/logger";
-import { calculateAvnuEstimatedOutput, calculateAvnuTotalCost, getTokenQuotes } from "@/utils/utils";
+// import { calculateAvnuEstimatedOutput, calculateAvnuTotalCost, getTokenQuotes } from "@/utils/utils";
 
 export class RouteService {
   async findBestRoutes(request: QuoteRequest): Promise<RouteInfo[]> {
@@ -45,7 +45,9 @@ export class RouteService {
     request: QuoteRequest,
   ): Promise<RouteInfo[] | null> {
 
-    const quotes = await getTokenQuotes(request);
+    // TODO: Implement Stellar DEX quote fetching
+    // const quotes = await getTokenQuotes(request);
+    const quotes: any[] = [];
 
     const routeInfo: RouteInfo[] = quotes.map((quote) => {
       const feeEstimate: GasEstimate = {
@@ -68,7 +70,9 @@ export class RouteService {
         fromToken: request.fromToken,
         toToken: request.toToken,
         amount: request.amount,
-        estimatedOutput: calculateAvnuEstimatedOutput(quote, 3),
+        // TODO: Calculate real estimated output amount
+        // estimatedOutput: calculateAvnuEstimatedOutput(quote, 3),
+        estimatedOutput: "0",
         fees: feeInfo
       }
 
@@ -76,7 +80,9 @@ export class RouteService {
         id: uuidv4(),
         serviceId: quote.quoteId,
         steps: [step],
-        totalCost: calculateAvnuTotalCost(quote, 3),
+        // TODO: Calculate real total route cost
+        // totalCost: calculateAvnuTotalCost(quote, 3),
+        totalCost: "0",
         estimatedTime: 2000, // return a real value later
         slippageTolerance: request.slippageTolerance || 0.005,
         gasEstimate: feeEstimate,
