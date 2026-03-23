@@ -45,11 +45,12 @@ export const config = {
     //   rpcUrl: process.env.OPTIMISM_RPC_URL || '',
     //   chainId: 10
     // },
-    starknet: {
-      rpcUrl: process.env.STARKNET_RPC_URL || "",
-      chainId: "starknet:sepolia",
-      accountAddress: process.env.GRIFFIN_STARKENT_ACCOUNT_ADDRESS,
-      privateKey: process.env.GRIFFIN_STARKNET_PRIV_KEY
+    stellar: {
+      rpcUrl: process.env.STELLAR_RPC_URL || "https://soroban-testnet.stellar.org",
+      horizonUrl: process.env.STELLAR_HORIZON_URL || "https://horizon-testnet.stellar.org",
+      chainId: "stellar:testnet",
+      accountAddress: process.env.GRIFFIN_STELLAR_ACCOUNT_ADDRESS,
+      secretKey: process.env.GRIFFIN_STELLAR_SECRET_KEY,
     },
   },
 
