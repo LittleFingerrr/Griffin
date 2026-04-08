@@ -55,9 +55,7 @@ describe("ChainService — instance methods", () => {
   });
 
   it("getSupportedTokens throws 404 when chainId has no tokens", async () => {
-    await expect(
-      service.getSupportedTokens(STELLAR_TESTNET),
-    ).rejects.toMatchObject({
+    await expect(service.getSupportedTokens(STELLAR_TESTNET)).rejects.toMatchObject({
       statusCode: 404,
       code: "NO_TOKENS_FOUND",
     });
@@ -106,9 +104,7 @@ describe("ChainService — instance methods", () => {
     });
 
     it("isTokenSupported is case-insensitive on address", async () => {
-      expect(
-        await service.isTokenSupported(TOKEN_ADDRESS.toLowerCase(), TOKEN_CHAIN),
-      ).toBe(true);
+      expect(await service.isTokenSupported(TOKEN_ADDRESS.toLowerCase(), TOKEN_CHAIN)).toBe(true);
     });
 
     it("isTokenSupported returns false for wrong chain", async () => {

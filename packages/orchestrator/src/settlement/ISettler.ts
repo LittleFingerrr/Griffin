@@ -1,4 +1,4 @@
-import { Intent, RouteInfo } from "../types";
+import { type Intent, type RouteInfo } from "../types";
 
 // --- Settler Types -----------------------------------------------------------
 

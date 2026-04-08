@@ -8,7 +8,7 @@ const mockReq = (overrides: Partial<Request> = {}): Request =>
     headers: {},
     body: {},
     ...overrides,
-  } as unknown as Request);
+  }) as unknown as Request;
 
 const mockRes = (): { res: Response; status: jest.Mock; json: jest.Mock } => {
   const json = jest.fn();

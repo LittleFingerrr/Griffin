@@ -41,9 +41,7 @@ const makeEngine = (result?: SettlementResult, shouldThrow?: Error) => {
   if (shouldThrow) {
     (engine.settle as jest.Mock).mockRejectedValue(shouldThrow);
   } else {
-    (engine.settle as jest.Mock).mockResolvedValue(
-      result ?? mockSettlementResult,
-    );
+    (engine.settle as jest.Mock).mockResolvedValue(result ?? mockSettlementResult);
   }
 
   return engine;
@@ -95,15 +93,15 @@ describe("IntentService.createIntent", () => {
   });
 
   it("throws INVALID_AMOUNT for zero amount", async () => {
-    await expect(
-      service.createIntent({ ...validRequest, amount: "0" }),
-    ).rejects.toMatchObject({ code: "INVALID_AMOUNT" });
+    await expect(service.createIntent({ ...validRequest, amount: "0" })).rejects.toMatchObject({
+      code: "INVALID_AMOUNT",
+    });
   });
 
   it("throws INVALID_AMOUNT for negative amount", async () => {
-    await expect(
-      service.createIntent({ ...validRequest, amount: "-5" }),
-    ).rejects.toMatchObject({ code: "INVALID_AMOUNT" });
+    await expect(service.createIntent({ ...validRequest, amount: "-5" })).rejects.toMatchObject({
+      code: "INVALID_AMOUNT",
+    });
   });
 
   it("throws UNSUPPORTED_CHAIN for unknown fromChain", async () => {
@@ -195,9 +193,7 @@ describe("IntentService.executeIntent", () => {
     service = new IntentService(engine);
 
     const intent = await service.createIntent(validRequest);
-    await expect(service.executeIntent(intent.id)).rejects.toThrow(
-      "settler failed",
-    );
+    await expect(service.executeIntent(intent.id)).rejects.toThrow("settler failed");
 
     const failed = await service.getIntent(intent.id);
     expect(failed!.status).toBe(IntentStatus.FAILED);

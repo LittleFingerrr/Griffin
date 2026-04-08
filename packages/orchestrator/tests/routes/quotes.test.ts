@@ -67,7 +67,19 @@ describe("POST /api/v1/quotes", () => {
   });
 
   it("response includes timestamp and expiresAt", async () => {
-    mockGetQuotes.mockResolvedValue([{ id: "r1", serviceId: "s1", steps: [], totalCost: "0", estimatedTime: 1, slippageTolerance: 0.01, gasEstimate: { gasPrice: "0", serviceCost: "0", totalCost: "0" }, createdAt: new Date(), expiresAt: new Date() }]);
+    mockGetQuotes.mockResolvedValue([
+      {
+        id: "r1",
+        serviceId: "s1",
+        steps: [],
+        totalCost: "0",
+        estimatedTime: 1,
+        slippageTolerance: 0.01,
+        gasEstimate: { gasPrice: "0", serviceCost: "0", totalCost: "0" },
+        createdAt: new Date(),
+        expiresAt: new Date(),
+      },
+    ]);
 
     const res = await request(buildApp()).post("/api/v1/quotes").send(validBody);
     expect(res.body.timestamp).toBeDefined();

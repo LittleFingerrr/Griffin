@@ -1,5 +1,5 @@
 import { config } from "@/config";
-import { IntentMessageType, SignatureType, QuoteRequest } from "@/types";
+import { type IntentMessageType, type SignatureType, type QuoteRequest } from "@/types";
 import { Keypair, StrKey, rpc } from "@stellar/stellar-sdk";
 
 const validateStellarAddress = (address: string): boolean => {
@@ -36,11 +36,7 @@ export const validateSignature = async (
   userAddress: string,
 ): Promise<boolean> => {
   if (chainId.startsWith("stellar")) {
-    return await validateStellarSignature(
-      signature as Buffer,
-      message as Buffer,
-      userAddress,
-    );
+    return await validateStellarSignature(signature as Buffer, message as Buffer, userAddress);
   }
 
   return false;
@@ -52,9 +48,7 @@ export const getStellarTokens = async (): Promise<unknown[]> => {
 };
 
 // TODO: Implement Stellar quote fetching (e.g. Stellar DEX path payment or Soroban AMM)
-export const getTokenQuotes = async (
-  _request: QuoteRequest,
-): Promise<unknown[]> => {
+export const getTokenQuotes = async (_request: QuoteRequest): Promise<unknown[]> => {
   throw new Error("Stellar quote fetching not yet implemented");
 };
 

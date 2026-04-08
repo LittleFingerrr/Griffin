@@ -1,8 +1,8 @@
 import { Router, type Request, type Response } from "express";
 import { body, validationResult } from "express-validator";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
-import { RouteService } from "../services/RouteService";
-import { QuoteRequest, QuoteResponse } from "../types";
+import { type RouteService } from "../services/RouteService";
+import { type QuoteRequest, type QuoteResponse } from "../types";
 
 const validateQuoteRequest = [
   body("fromChain").isString().notEmpty().withMessage("Valid fromChain required"),

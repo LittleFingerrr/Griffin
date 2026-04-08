@@ -1,9 +1,9 @@
 import {
-  RouteInfo,
-  QuoteRequest,
-  RouteStep,
-  GasEstimate,
-  FeeInfo,
+  type RouteInfo,
+  type QuoteRequest,
+  type RouteStep,
+  type GasEstimate,
+  type FeeInfo,
 } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { logger } from "../utils/logger";
@@ -41,9 +41,7 @@ export class RouteService {
     }
   }
 
-  private async findSwapRoutes(
-    request: QuoteRequest,
-  ): Promise<RouteInfo[] | null> {
+  private async findSwapRoutes(request: QuoteRequest): Promise<RouteInfo[] | null> {
     // TODO: Implement Stellar DEX quote fetching
     // const quotes = await getTokenQuotes(request);
     const quotes: any[] = [];
@@ -53,11 +51,7 @@ export class RouteService {
         // gasLimit: quote.gasFees.toString(),
         gasPrice: quote.gasFees.toString(),
         serviceCost: (quote.fee.avnuFees + quote.fee.integratorFees).toString(),
-        totalCost: (
-          quote.gasFees +
-          quote.fee.avnuFees +
-          quote.fee.integratorFees
-        ).toString(),
+        totalCost: (quote.gasFees + quote.fee.avnuFees + quote.fee.integratorFees).toString(),
       };
 
       const feeInfo: FeeInfo = {
@@ -115,10 +109,7 @@ export class RouteService {
   }
 
   // NOT IN USE RIGHT NOW
-  private async createBridgeRoute(
-    request: QuoteRequest,
-    provider: string,
-  ): Promise<any | null> {
+  private async createBridgeRoute(request: QuoteRequest, provider: string): Promise<any | null> {
     const gasEstimate: GasEstimate = {
       // gasLimit: "300000",
       gasPrice: "25000000000", // 25 gwei

@@ -1,4 +1,4 @@
-import { ChainInfo, TokenInfo } from "../types";
+import { type ChainInfo, type TokenInfo } from "../types";
 import { AppError } from "../middleware/errorHandler";
 import { getStellarTokens } from "@/utils/utils";
 
@@ -48,16 +48,9 @@ export class ChainService {
 
   async getSupportedTokens(chainId?: string): Promise<TokenInfo[]> {
     if (chainId) {
-      const tokens = this.supportedTokens.filter(
-        (token) => token.chainId === chainId,
-      );
+      const tokens = this.supportedTokens.filter((token) => token.chainId === chainId);
       if (tokens.length === 0) {
-        throw new AppError(
-          "No tokens found for chain",
-          404,
-          "NO_TOKENS_FOUND",
-          { chainId },
-        );
+        throw new AppError("No tokens found for chain", 404, "NO_TOKENS_FOUND", { chainId });
       }
       return tokens;
     }
@@ -65,35 +58,25 @@ export class ChainService {
   }
 
   static async getChainInfo(chainId: string): Promise<ChainInfo | null> {
-    return (
-      this.supportedChains.find((chain) => chain.chainId === chainId) || null
-    );
+    return this.supportedChains.find((chain) => chain.chainId === chainId) || null;
   }
 
   static async isChainSupported(chainId: string): Promise<boolean> {
     return this.supportedChains.some((chain) => chain.chainId === chainId);
   }
 
-  async isTokenSupported(
-    tokenAddress: string,
-    chainId: string,
-  ): Promise<boolean> {
+  async isTokenSupported(tokenAddress: string, chainId: string): Promise<boolean> {
     return this.supportedTokens.some(
       (token) =>
-        token.address.toLowerCase() === tokenAddress.toLowerCase() &&
-        token.chainId === chainId,
+        token.address.toLowerCase() === tokenAddress.toLowerCase() && token.chainId === chainId,
     );
   }
 
-  async getTokenInfo(
-    tokenAddress: string,
-    chainId: string,
-  ): Promise<TokenInfo | null> {
+  async getTokenInfo(tokenAddress: string, chainId: string): Promise<TokenInfo | null> {
     return (
       this.supportedTokens.find(
         (token) =>
-          token.address.toLowerCase() === tokenAddress.toLowerCase() &&
-          token.chainId === chainId,
+          token.address.toLowerCase() === tokenAddress.toLowerCase() && token.chainId === chainId,
       ) || null
     );
   }

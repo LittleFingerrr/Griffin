@@ -8,8 +8,5 @@ module.exports = {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   clearMocks: true,
-  collectCoverageFrom: [
-    "src/**/*.ts",
-    "!src/app.ts",
-  ],
+  collectCoverageFrom: ["src/**/*.ts", "!src/app.ts"],
 };

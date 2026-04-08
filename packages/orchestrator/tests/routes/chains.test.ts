@@ -32,9 +32,7 @@ describe("GET /api/v1/chains", () => {
 
 describe("GET /api/v1/chains/:chainId/tokens", () => {
   it("returns 404 when chain has no tokens", async () => {
-    const res = await request(buildApp()).get(
-      "/api/v1/chains/stellar:testnet/tokens",
-    );
+    const res = await request(buildApp()).get("/api/v1/chains/stellar:testnet/tokens");
     expect(res.status).toBe(404);
     expect(res.body.error.code).toBe("NO_TOKENS_FOUND");
   });

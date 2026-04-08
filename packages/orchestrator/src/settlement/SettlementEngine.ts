@@ -1,7 +1,7 @@
-import { Intent } from "../types";
+import { type Intent } from "../types";
 import { AppError } from "../middleware/errorHandler";
 import { logger } from "../utils/logger";
-import { ISettler, SettlementResult, SettlerType } from "./ISettler";
+import { type ISettler, type SettlementResult, type SettlerType } from "./ISettler";
 
 /**
  * Selects and delegates to the appropriate settler for a given intent.
@@ -60,12 +60,7 @@ export class SettlementEngine {
       declines,
     });
 
-    throw new AppError(
-      "No settler available for this intent",
-      500,
-      "NO_SETTLER",
-      { declines },
-    );
+    throw new AppError("No settler available for this intent", 500, "NO_SETTLER", { declines });
   }
 
   /** Returns the ordered list of registered settler types - useful for health checks. */

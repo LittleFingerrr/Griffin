@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from "express";
 import { asyncHandler } from "../middleware/errorHandler";
-import { HealthService } from "../services/HealthService";
+import { type HealthService } from "../services/HealthService";
 
 export default function healthRoutes(healthService: HealthService): Router {
   const router: Router = Router();

@@ -9,7 +9,7 @@ const mockReq = (overrides: Partial<Request> = {}): Request =>
     ip: "127.0.0.1",
     get: jest.fn().mockReturnValue("test-agent"),
     ...overrides,
-  } as unknown as Request);
+  }) as unknown as Request;
 
 const mockRes = () => {
   const setHeader = jest.fn();
@@ -41,10 +41,7 @@ describe("requestLogger middleware", () => {
 
     requestLogger(req, res, next);
 
-    expect(setHeader).toHaveBeenCalledWith(
-      "x-request-id",
-      expect.any(String),
-    );
+    expect(setHeader).toHaveBeenCalledWith("x-request-id", expect.any(String));
   });
 
   it("calls next()", () => {

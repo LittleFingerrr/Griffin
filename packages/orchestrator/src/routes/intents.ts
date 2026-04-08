@@ -1,8 +1,8 @@
 import { Router, type Request, type Response } from "express";
 import { body, param, validationResult } from "express-validator";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
-import { IntentService } from "../services/IntentService";
-import { CreateIntentRequest, IntentResponse } from "../types";
+import { type IntentService } from "../services/IntentService";
+import { type CreateIntentRequest, type IntentResponse } from "../types";
 
 // Validation middleware
 const validateCreateIntent = [
@@ -16,9 +16,7 @@ const validateCreateIntent = [
   body("signature").optional().isString().withMessage("Valid signature required"),
 ];
 
-const validateIntentId = [
-  param("id").isUUID().withMessage("Valid intent ID required"),
-];
+const validateIntentId = [param("id").isUUID().withMessage("Valid intent ID required")];
 
 export default function intentRoutes(intentService: IntentService): Router {
   const router: Router = Router();
