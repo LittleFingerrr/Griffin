@@ -6,12 +6,26 @@ import { config } from "./config";
 import { logger } from "./utils/logger";
 import { errorHandler } from "./middleware/errorHandler";
 import { requestLogger } from "./middleware/requestLogger";
+import { RouteService } from "./services/RouteService";
+import { IntentService } from "./services/IntentService";
+import { SettlementEngine } from "./settlement/SettlementEngine";
 
 // Import routes
 import intentRoutes from "./routes/intents";
 import quoteRoutes from "./routes/quotes";
 import healthRoutes from "./routes/health";
 import chainRoutes from "./routes/chains";
+
+// --- Composition root --------------------------------------------------------
+// Wire settlers here. Order = preference (first capable settler wins).
+// Add new settlers by importing and appending to the array — nothing else changes.
+const routeService = new RouteService();
+const settlementEngine = new SettlementEngine([
+  // new InventorySettler(),   <- add when implemented
+  // new SwapSettler(routeService),  <- add when implemented
+]);
+const intentService = new IntentService(settlementEngine);
+// -----------------------------------------------------------------------------
 
 const app: Express = express();
 
@@ -40,7 +54,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
 // API routes
-app.use("/api/v1/intents", intentRoutes);
+app.use("/api/v1/intents", intentRoutes(intentService));
 app.use("/api/v1/quotes", quoteRoutes);
 app.use("/api/v1/health", healthRoutes);
 app.use("/api/v1/chains", chainRoutes);

@@ -37,7 +37,7 @@ router.post(
     }
 
     const quoteRequest: QuoteRequest = req.body;
-    const routes = await routeService.findBestRoutes(quoteRequest);
+    const routes = await routeService.getQuotes(quoteRequest);
 
     if (routes.length === 0) {
       throw new AppError("No viable routes found", 404, "NO_ROUTES_AVAILABLE", {

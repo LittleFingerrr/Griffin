@@ -46,8 +46,11 @@ export const config = {
     //   chainId: 10
     // },
     stellar: {
-      rpcUrl: process.env.STELLAR_RPC_URL || "https://soroban-testnet.stellar.org",
-      horizonUrl: process.env.STELLAR_HORIZON_URL || "https://horizon-testnet.stellar.org",
+      rpcUrl:
+        process.env.STELLAR_RPC_URL || "https://soroban-testnet.stellar.org",
+      horizonUrl:
+        process.env.STELLAR_HORIZON_URL ||
+        "https://horizon-testnet.stellar.org",
       chainId: "stellar:testnet",
       accountAddress: process.env.GRIFFIN_STELLAR_ACCOUNT_ADDRESS,
       secretKey: process.env.GRIFFIN_STELLAR_SECRET_KEY,

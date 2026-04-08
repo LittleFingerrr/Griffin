@@ -29,7 +29,8 @@
       "@/models/*": ["models/*"],
       "@/routes/*": ["routes/*"],
       "@/middleware/*": ["middleware/*"],
-      "@/utils/*": ["utils/*"]
+      "@/utils/*": ["utils/*"],
+      "@/settlement/*": ["settlement/*"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

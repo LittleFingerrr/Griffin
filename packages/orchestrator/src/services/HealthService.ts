@@ -129,8 +129,8 @@ export class HealthService {
       starknet:
         checks[0].status === "fulfilled"
           ? checks[0].value
-          // TODO: Fix wrong status on failed connection
-          : { status: "healthy", error: "Connection failed" },
+          : // TODO: Fix wrong status on failed connection
+            { status: "healthy", error: "Connection failed" },
     };
   }
 

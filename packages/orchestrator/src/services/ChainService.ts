@@ -13,35 +13,33 @@ export class ChainService {
       symbol: "Stellar",
       rpcUrl: "https://horizon-testnet.stellar.org",
       blockExplorer: "https://stellar.expert/explorer/testnet",
-      isTestnet: true
-    }
+      isTestnet: true,
+    },
   ];
 
-  private supportedTokens: TokenInfo[]
+  private supportedTokens: TokenInfo[];
 
-  constructor () {
+  constructor() {
     this.supportedTokens = [];
 
     // TODO: Handle token fetch errors in constructor
-    getStellarTokens()
-      .then((tokens) => {
-        tokens.forEach((token: any) => {
-          const equivGriffinToken = {
-            address: token.address,
-            decimals: token.decimals,
-            logoUrl: token.logoUri!,
-            // TODO: Fix hardcoded wrong chainId here
-            chainId: 'starknet:sepolia', // Change this when deploying to mainnet
-            name: token.name,
-            symbol: token.symbol
-          }
+    getStellarTokens().then((tokens) => {
+      tokens.forEach((token: any) => {
+        const equivGriffinToken = {
+          address: token.address,
+          decimals: token.decimals,
+          logoUrl: token.logoUri!,
+          // TODO: Fix hardcoded wrong chainId here
+          chainId: "starknet:sepolia", // Change this when deploying to mainnet
+          name: token.name,
+          symbol: token.symbol,
+        };
 
-          this.supportedTokens.push(equivGriffinToken);
-        })
-      })
+        this.supportedTokens.push(equivGriffinToken);
+      });
+    });
 
     // Add more functions when adding new chains
-    
   }
 
   static async getSupportedChains(): Promise<ChainInfo[]> {

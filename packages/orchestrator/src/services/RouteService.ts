@@ -10,7 +10,7 @@ import { logger } from "../utils/logger";
 // import { calculateAvnuEstimatedOutput, calculateAvnuTotalCost, getTokenQuotes } from "@/utils/utils";
 
 export class RouteService {
-  async findBestRoutes(request: QuoteRequest): Promise<RouteInfo[]> {
+  async getQuotes(request: QuoteRequest): Promise<RouteInfo[]> {
     try {
       logger.info("Finding routes", { request });
 
@@ -44,7 +44,6 @@ export class RouteService {
   private async findSwapRoutes(
     request: QuoteRequest,
   ): Promise<RouteInfo[] | null> {
-
     // TODO: Implement Stellar DEX quote fetching
     // const quotes = await getTokenQuotes(request);
     const quotes: any[] = [];
@@ -54,17 +53,21 @@ export class RouteService {
         // gasLimit: quote.gasFees.toString(),
         gasPrice: quote.gasFees.toString(),
         serviceCost: (quote.fee.avnuFees + quote.fee.integratorFees).toString(),
-        totalCost: (quote.gasFees + quote.fee.avnuFees + quote.fee.integratorFees).toString()
-      }
+        totalCost: (
+          quote.gasFees +
+          quote.fee.avnuFees +
+          quote.fee.integratorFees
+        ).toString(),
+      };
 
       const feeInfo: FeeInfo = {
         gasFee: quote.gasFees.toString(),
-        total: quote.gasFees.toString()
-      }
+        total: quote.gasFees.toString(),
+      };
 
       const step: RouteStep = {
-        type: 'swap',
-        provider: 'avnu',
+        type: "swap",
+        provider: "avnu",
         fromChain: request.fromChain,
         toChain: request.toChain,
         fromToken: request.fromToken,
@@ -73,8 +76,8 @@ export class RouteService {
         // TODO: Calculate real estimated output amount
         // estimatedOutput: calculateAvnuEstimatedOutput(quote, 3),
         estimatedOutput: "0",
-        fees: feeInfo
-      }
+        fees: feeInfo,
+      };
 
       return {
         id: uuidv4(),
@@ -87,11 +90,11 @@ export class RouteService {
         slippageTolerance: request.slippageTolerance || 0.005,
         gasEstimate: feeEstimate,
         createdAt: new Date(),
-        expiresAt: new Date(Date.now() + 5 * 60 * 1000) // 5 minutes
-      }
-    })
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
+      };
+    });
 
-    return routeInfo
+    return routeInfo;
   }
 
   // NOT IN USE RIGHT NOW
@@ -111,7 +114,6 @@ export class RouteService {
     return routes;
   }
 
-
   // NOT IN USE RIGHT NOW
   private async createBridgeRoute(
     request: QuoteRequest,
@@ -121,7 +123,7 @@ export class RouteService {
       // gasLimit: "300000",
       gasPrice: "25000000000", // 25 gwei
       totalCost: "0.0075", // ETH
-      serviceCost: ""
+      serviceCost: "",
     };
 
     const bridgeFees: FeeInfo = {
