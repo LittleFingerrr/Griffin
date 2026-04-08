@@ -10,7 +10,7 @@ import { logger } from "../utils/logger";
 // import { calculateAvnuEstimatedOutput, calculateAvnuTotalCost, getTokenQuotes } from "@/utils/utils";
 
 export class RouteService {
-  async findBestRoutes(request: QuoteRequest): Promise<RouteInfo[]> {
+  async getQuotes(request: QuoteRequest): Promise<RouteInfo[]> {
     try {
       logger.info("Finding routes", { request });
 

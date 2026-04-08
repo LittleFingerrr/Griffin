@@ -4,7 +4,7 @@
     "module": "commonjs",
     "lib": ["ES2022"],
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -29,7 +29,8 @@
       "@/models/*": ["models/*"],
       "@/routes/*": ["routes/*"],
       "@/middleware/*": ["middleware/*"],
-      "@/utils/*": ["utils/*"]
+      "@/utils/*": ["utils/*"],
+      "@/settlement/*": ["settlement/*"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

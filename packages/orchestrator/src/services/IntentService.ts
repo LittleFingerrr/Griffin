@@ -1,16 +1,18 @@
 import { v4 as uuidv4 } from "uuid";
-import { type Intent, IntentStatus, type CreateIntentRequest, type QuoteRequest } from "../types";
+import { type Intent, IntentStatus, type CreateIntentRequest } from "../types";
 import { AppError } from "../middleware/errorHandler";
 import { logger } from "../utils/logger";
 import { ChainService } from "./ChainService";
-// import { validateAndParseAddress } from "starknet";
 import { validateAddress } from "@/utils/utils";
-import { RouteService } from "./RouteService";
-
-const routeService = new RouteService();
+import { type SettlementEngine } from "@/settlement/SettlementEngine";
 
 export class IntentService {
-  private intents: Map<string, Intent> = new Map(); // intend_id => intent
+  private intents: Map<string, Intent> = new Map();
+  private settlementEngine: SettlementEngine;
+
+  constructor(settlementEngine: SettlementEngine) {
+    this.settlementEngine = settlementEngine;
+  }
 
   async createIntent(request: CreateIntentRequest): Promise<Intent> {
     try {
@@ -69,35 +71,21 @@ export class IntentService {
     intent.updatedAt = new Date();
 
     logger.info("Intent execution started", { intentId });
+    try {
+      const result = await this.settlementEngine.settle(intent);
 
-    const quoteRequest: QuoteRequest = {
-      fromChain: intent.fromChain,
-      toChain: intent.toChain,
-      fromToken: intent.fromToken,
-      toToken: intent.toToken,
-      amount: intent.amount,
-      slippageTolerance: 0.05,
-    };
+      intent.status = IntentStatus.COMPLETED;
+      intent.updatedAt = new Date();
+      intent.completedAt = new Date();
+      intent.metadata.settlement = result;
 
-    // TODO: VERIFY PAYMENT -> DEPENDING ON HOW SDK BILLS USER
-    // OR USE THE SIGNED MESSAGE, SUBMIT IT TO A CONTRACT THAT ALLOWS THAT AND TRANSFER
-    // VERIFY THAT THE PAYMENT HAS HAPPENED, IN CASE USER BALANCE IS INSUFFICIENT
-
-    const bestRoutes = await routeService.findBestRoutes(quoteRequest);
-
-    // TODO: IMPLEMENT MORE ROBUST LOGIC FOR SELECTING BEST ROUTE
-    const selectedRoute = bestRoutes[0];
-
-    // TODO: Replace executeAvnuSwap with Stellar swap
-    // @ts-expect-error
-    const {} = executeAvnuSwap(selectedRoute);
-
-    // TODO: Implement actual execution logic
-    // This would involve:
-    // 1. Verify payment
-    // 2. Find best route
-    // 3. Execute bridge/swap
-    // 4. Monitor completion
+      logger.info("Intent completed", { intentId, settler: result.settlerUsed });
+    } catch (err) {
+      intent.status = IntentStatus.FAILED;
+      intent.updatedAt = new Date();
+      logger.error("Intent failed", { intentId, err });
+      throw err;
+    }
 
     return intent;
   }

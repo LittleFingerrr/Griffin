@@ -18,7 +18,7 @@ router.get(
 router.get(
   "/:chainId/tokens",
   asyncHandler(async (req: Request, res: Response) => {
-    const chainId = req.params.id;
+    const chainId = req.params.chainId;
     // const chainId = parseInt(rawChainId as string, 10); => Chain id is string now
     const tokens = await chainService.getSupportedTokens(chainId as string);
     res.json({ tokens });
