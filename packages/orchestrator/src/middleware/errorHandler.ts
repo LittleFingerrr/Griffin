@@ -1,18 +1,13 @@
-import { Request, Response, NextFunction } from "express";
+import { type Request, type Response, type NextFunction } from "express";
 import { logger } from "../utils/logger";
-import { ErrorResponse } from "../types";
+import { type ErrorResponse } from "../types";
 
 export class AppError extends Error {
   public statusCode: number;
   public code: string;
   public details?: Record<string, any>;
 
-  constructor(
-    message: string,
-    statusCode: number,
-    code: string,
-    details?: Record<string, any>,
-  ) {
+  constructor(message: string, statusCode: number, code: string, details?: Record<string, any>) {
     super(message);
     this.statusCode = statusCode;
     this.code = code;
@@ -25,7 +20,7 @@ export const errorHandler = (
   error: Error | AppError,
   req: Request,
   res: Response,
-  next: NextFunction,
+  // next: NextFunction,
 ): void => {
   let statusCode = 500;
   let code = "INTERNAL_SERVER_ERROR";

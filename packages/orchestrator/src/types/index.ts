@@ -1,9 +1,8 @@
-
 export interface Intent {
   id: string;
   userAddress: string;
-  fromChain: ChainInfo['chainId'];
-  toChain: ChainInfo['chainId'];
+  fromChain: ChainInfo["chainId"];
+  toChain: ChainInfo["chainId"];
   fromToken: string;
   toToken: string;
   amount: string;
@@ -41,8 +40,8 @@ export interface RouteInfo {
 export interface RouteStep {
   type: "swap" | "bridge";
   provider: string;
-  fromChain: ChainInfo['chainId'];
-  toChain: ChainInfo['chainId'];
+  fromChain: ChainInfo["chainId"];
+  toChain: ChainInfo["chainId"];
   fromToken: string;
   toToken: string;
   amount: string;
@@ -53,7 +52,7 @@ export interface RouteStep {
 export interface TransactionInfo {
   id: string;
   intentId: string;
-  chainId: ChainInfo['chainId'];
+  chainId: ChainInfo["chainId"];
   hash?: string;
   status: TransactionStatus;
   type: "swap" | "bridge" | "approval";
@@ -79,7 +78,7 @@ export interface GasEstimate {
   gasPrice: string;
   maxFeePerGas?: string;
   maxPriorityFeePerGas?: string;
-  serviceCost: string,
+  serviceCost: string;
   totalCost: string;
 }
 
@@ -96,8 +95,8 @@ export type SignatureType = Buffer | string;
 export type IntentMessageType = Buffer | string | Record<string, unknown>;
 
 export interface CreateIntentRequest {
-  fromChain: ChainInfo['chainId'];
-  toChain: ChainInfo['chainId'];
+  fromChain: ChainInfo["chainId"];
+  toChain: ChainInfo["chainId"];
   fromToken: string;
   toToken: string;
   amount: string;
@@ -117,8 +116,8 @@ export interface IntentResponse {
 }
 
 export interface QuoteRequest {
-  fromChain: ChainInfo['chainId'];
-  toChain: ChainInfo['chainId'];
+  fromChain: ChainInfo["chainId"];
+  toChain: ChainInfo["chainId"];
   fromToken: string;
   toToken: string;
   amount: string;
@@ -126,7 +125,7 @@ export interface QuoteRequest {
 }
 
 export interface QuoteResponse {
-  serviceId: string,
+  serviceId: string;
   routes: RouteInfo[];
   bestRoute?: RouteInfo;
   timestamp: string;

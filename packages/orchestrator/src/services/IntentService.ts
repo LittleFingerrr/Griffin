@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
-import { Intent, IntentStatus, CreateIntentRequest, QuoteRequest } from "../types";
+import { type Intent, IntentStatus, type CreateIntentRequest, type QuoteRequest } from "../types";
 import { AppError } from "../middleware/errorHandler";
 import { logger } from "../utils/logger";
 import { ChainService } from "./ChainService";
 // import { validateAndParseAddress } from "starknet";
-import { executeStellarSwap, validateAddress, validateSignature } from "@/utils/utils";
+import { validateAddress } from "@/utils/utils";
 import { RouteService } from "./RouteService";
 
 const routeService = new RouteService();
@@ -61,11 +61,7 @@ export class IntentService {
     }
 
     if (intent.status !== IntentStatus.PENDING) {
-      throw new AppError(
-        "Intent cannot be executed in current status",
-        400,
-        "INVALID_STATUS",
-      );
+      throw new AppError("Intent cannot be executed in current status", 400, "INVALID_STATUS");
     }
 
     // Update status to executing
@@ -80,8 +76,8 @@ export class IntentService {
       fromToken: intent.fromToken,
       toToken: intent.toToken,
       amount: intent.amount,
-      slippageTolerance: 0.05
-    }
+      slippageTolerance: 0.05,
+    };
 
     // TODO: VERIFY PAYMENT -> DEPENDING ON HOW SDK BILLS USER
     // OR USE THE SIGNED MESSAGE, SUBMIT IT TO A CONTRACT THAT ALLOWS THAT AND TRANSFER
@@ -113,11 +109,7 @@ export class IntentService {
     }
 
     if (intent.status === IntentStatus.EXECUTING) {
-      throw new AppError(
-        "Cannot cancel executing intent",
-        400,
-        "CANNOT_CANCEL",
-      );
+      throw new AppError("Cannot cancel executing intent", 400, "CANNOT_CANCEL");
     }
 
     intent.status = IntentStatus.CANCELLED;
@@ -128,82 +120,43 @@ export class IntentService {
 
   private async validateIntent(request: CreateIntentRequest): Promise<void> {
     const supportedChains = await ChainService.getSupportedChains();
-    const fromChain = supportedChains.find(
-      (chain) => chain.chainId === request.fromChain,
-    );
+    const fromChain = supportedChains.find((chain) => chain.chainId === request.fromChain);
     if (!fromChain) {
       throw new AppError("Unsupported source chain", 400, "UNSUPPORTED_CHAIN", {
         chainId: request.fromChain,
       });
     }
-    const toChain = supportedChains.find(
-      (chain) => chain.chainId === request.toChain,
-    );
+    const toChain = supportedChains.find((chain) => chain.chainId === request.toChain);
     if (!toChain) {
-      throw new AppError(
-        "Unsupported destination chain",
-        400,
-        "UNSUPPORTED_CHAIN",
-        { chainId: request.toChain },
-      );
+      throw new AppError("Unsupported destination chain", 400, "UNSUPPORTED_CHAIN", {
+        chainId: request.toChain,
+      });
     }
 
     // Validate amount
     const amount = parseFloat(request.amount);
     if (amount <= 0) {
-      throw new AppError(
-        "Amount must be greater than zero",
-        400,
-        "INVALID_AMOUNT",
-      );
+      throw new AppError("Amount must be greater than zero", 400, "INVALID_AMOUNT");
     }
 
-    const isValidSenderAddress = validateAddress(
-      request.fromChain,
-      request.userAddress,
-    );
+    const isValidSenderAddress = validateAddress(request.fromChain, request.userAddress);
     if (!isValidSenderAddress) {
-      throw new AppError(
-        "Sender address not valid on chain",
-        400,
-        "INVALID_ADDRESS",
-      );
+      throw new AppError("Sender address not valid on chain", 400, "INVALID_ADDRESS");
     }
 
-    const isValidRecipientAddress = validateAddress(
-      request.toChain,
-      request.recipient,
-    );
+    const isValidRecipientAddress = validateAddress(request.toChain, request.recipient);
     if (!isValidRecipientAddress) {
-      throw new AppError(
-        "Sender address not valid on chain",
-        400,
-        "INVALID_ADDRESS",
-      );
+      throw new AppError("Sender address not valid on chain", 400, "INVALID_ADDRESS");
     }
 
-    const isValidInputTokenAddress = validateAddress(
-      request.fromChain,
-      request.fromToken,
-    );
+    const isValidInputTokenAddress = validateAddress(request.fromChain, request.fromToken);
     if (!isValidInputTokenAddress) {
-      throw new AppError(
-        "Sender address not valid on chain",
-        400,
-        "INVALID_ADDRESS",
-      );
+      throw new AppError("Sender address not valid on chain", 400, "INVALID_ADDRESS");
     }
 
-    const isValidOutputTokenAddress = validateAddress(
-      request.toChain,
-      request.toToken,
-    );
+    const isValidOutputTokenAddress = validateAddress(request.toChain, request.toToken);
     if (!isValidOutputTokenAddress) {
-      throw new AppError(
-        "Sender address not valid on chain",
-        400,
-        "INVALID_ADDRESS",
-      );
+      throw new AppError("Sender address not valid on chain", 400, "INVALID_ADDRESS");
     }
 
     // Additional validations would go here:
@@ -211,12 +164,12 @@ export class IntentService {
     if (!request.requestSignature) {
       throw new AppError("No signature provided", 400, "MISSING_SIGNATURE");
     }
-    const isValidSignature = validateSignature(
-      request.fromChain,
-      request.requestSignature,
-      request.requestMessage,
-      request.userAddress,
-    );
+    // const isValidSignature = validateSignature(
+    //   request.fromChain,
+    //   request.requestSignature,
+    //   request.requestMessage,
+    //   request.userAddress,
+    // );
     // TODO: Use isValidSignature result, not duplicate check
     if (!request.requestSignature) {
       throw new AppError("Invalid signature", 400, "MISSING_SIGNATURE");
