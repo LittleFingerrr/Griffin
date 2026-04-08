@@ -1,5 +1,5 @@
 import { config } from "@/config";
-import { IntentMessageType, SignatureType, QuoteRequest } from "@/types";
+import { type IntentMessageType, type SignatureType, type QuoteRequest } from "@/types";
 import { Keypair, StrKey, rpc } from "@stellar/stellar-sdk";
 
 const validateStellarAddress = (address: string): boolean => {

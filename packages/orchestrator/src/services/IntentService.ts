@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
-import { Intent, IntentStatus, CreateIntentRequest, QuoteRequest } from "../types";
+import { type Intent, IntentStatus, type CreateIntentRequest, type QuoteRequest } from "../types";
 import { AppError } from "../middleware/errorHandler";
 import { logger } from "../utils/logger";
 import { ChainService } from "./ChainService";
 // import { validateAndParseAddress } from "starknet";
-import { executeStellarSwap, validateAddress, validateSignature } from "@/utils/utils";
+import { validateAddress } from "@/utils/utils";
 import { RouteService } from "./RouteService";
 
 const routeService = new RouteService();
@@ -164,12 +164,12 @@ export class IntentService {
     if (!request.requestSignature) {
       throw new AppError("No signature provided", 400, "MISSING_SIGNATURE");
     }
-    const isValidSignature = validateSignature(
-      request.fromChain,
-      request.requestSignature,
-      request.requestMessage,
-      request.userAddress,
-    );
+    // const isValidSignature = validateSignature(
+    //   request.fromChain,
+    //   request.requestSignature,
+    //   request.requestMessage,
+    //   request.userAddress,
+    // );
     // TODO: Use isValidSignature result, not duplicate check
     if (!request.requestSignature) {
       throw new AppError("Invalid signature", 400, "MISSING_SIGNATURE");

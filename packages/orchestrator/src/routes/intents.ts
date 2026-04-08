@@ -2,7 +2,7 @@ import { Router, type Request, type Response } from "express";
 import { body, param, validationResult } from "express-validator";
 import { asyncHandler, AppError } from "../middleware/errorHandler";
 import { IntentService } from "../services/IntentService";
-import { CreateIntentRequest, IntentResponse } from "../types";
+import { type CreateIntentRequest, type IntentResponse } from "../types";
 
 const router: Router = Router();
 const intentService = new IntentService();

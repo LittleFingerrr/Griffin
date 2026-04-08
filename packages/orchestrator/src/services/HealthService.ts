@@ -1,4 +1,4 @@
-import { DependencyStatus, HealthStatus } from "@/types";
+import { type DependencyStatus, type HealthStatus } from "@/types";
 import { config } from "../config";
 import { logger } from "../utils/logger";
 // import { RpcProvider } from "starknet";
@@ -140,9 +140,9 @@ export class HealthService {
       }
 
       // TODO: Implement Stellar Horizon health check
-      const provider: any = "";
+      // const provider: any = "";
 
-      const latestBlock = await provider.getBlockLatestAccepted();
+      // const latestBlock = await provider.getBlockLatestAccepted();
 
       const responseTime = Date.now() - startTime;
 

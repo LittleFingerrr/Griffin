@@ -1,4 +1,4 @@
-import { ChainInfo, TokenInfo } from "../types";
+import { type ChainInfo, type TokenInfo } from "../types";
 import { AppError } from "../middleware/errorHandler";
 import { getStellarTokens } from "@/utils/utils";
 
