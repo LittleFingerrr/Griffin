@@ -1,10 +1,6 @@
 import { config } from "@/config";
 import { IntentMessageType, SignatureType, QuoteRequest } from "@/types";
-import {
-  Keypair,
-  StrKey,
-  rpc,
-} from "@stellar/stellar-sdk";
+import { Keypair, StrKey, rpc } from "@stellar/stellar-sdk";
 
 const validateStellarAddress = (address: string): boolean => {
   return StrKey.isValidEd25519PublicKey(address);
@@ -40,11 +36,7 @@ export const validateSignature = async (
   userAddress: string,
 ): Promise<boolean> => {
   if (chainId.startsWith("stellar")) {
-    return await validateStellarSignature(
-      signature as Buffer,
-      message as Buffer,
-      userAddress,
-    );
+    return await validateStellarSignature(signature as Buffer, message as Buffer, userAddress);
   }
 
   return false;

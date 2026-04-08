@@ -11,12 +11,8 @@ const routeService = new RouteService();
 const validateQuoteRequest = [
   body("fromChain").isInt({ min: 1 }).withMessage("Valid fromChain required"),
   body("toChain").isInt({ min: 1 }).withMessage("Valid toChain required"),
-  body("fromToken")
-    .isEthereumAddress()
-    .withMessage("Valid fromToken address required"),
-  body("toToken")
-    .isEthereumAddress()
-    .withMessage("Valid toToken address required"),
+  body("fromToken").isEthereumAddress().withMessage("Valid fromToken address required"),
+  body("toToken").isEthereumAddress().withMessage("Valid toToken address required"),
   body("amount").isNumeric().withMessage("Valid amount required"),
   body("slippageTolerance")
     .optional()

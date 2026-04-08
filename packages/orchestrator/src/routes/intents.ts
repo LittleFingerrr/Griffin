@@ -11,28 +11,15 @@ const intentService = new IntentService();
 const validateCreateIntent = [
   body("fromChain").isInt({ min: 1 }).withMessage("Valid fromChain required"),
   body("toChain").isInt({ min: 1 }).withMessage("Valid toChain required"),
-  body("fromToken")
-    .isEthereumAddress()
-    .withMessage("Valid fromToken address required"),
-  body("toToken")
-    .isEthereumAddress()
-    .withMessage("Valid toToken address required"),
+  body("fromToken").isEthereumAddress().withMessage("Valid fromToken address required"),
+  body("toToken").isEthereumAddress().withMessage("Valid toToken address required"),
   body("amount").isNumeric().withMessage("Valid amount required"),
-  body("recipient")
-    .isEthereumAddress()
-    .withMessage("Valid recipient address required"),
-  body("userAddress")
-    .isEthereumAddress()
-    .withMessage("Valid userAddress required"),
-  body("signature")
-    .optional()
-    .isString()
-    .withMessage("Valid signature required"),
+  body("recipient").isEthereumAddress().withMessage("Valid recipient address required"),
+  body("userAddress").isEthereumAddress().withMessage("Valid userAddress required"),
+  body("signature").optional().isString().withMessage("Valid signature required"),
 ];
 
-const validateIntentId = [
-  param("id").isUUID().withMessage("Valid intent ID required"),
-];
+const validateIntentId = [param("id").isUUID().withMessage("Valid intent ID required")];
 
 // POST /api/v1/intents - Create new payment intent
 router.post(

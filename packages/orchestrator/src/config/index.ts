@@ -11,9 +11,7 @@ export const config = {
   },
 
   database: {
-    url:
-      process.env.DATABASE_URL ||
-      "postgresql://localhost:5432/griffin_orchestrator",
+    url: process.env.DATABASE_URL || "postgresql://localhost:5432/griffin_orchestrator",
   },
 
   redis: {
@@ -22,9 +20,7 @@ export const config = {
   },
 
   cors: {
-    allowedOrigins: process.env.CORS_ORIGINS?.split(",") || [
-      "http://localhost:3000",
-    ],
+    allowedOrigins: process.env.CORS_ORIGINS?.split(",") || ["http://localhost:3000"],
   },
 
   blockchain: {

@@ -9,13 +9,12 @@ export class HealthService {
     const startTime = Date.now();
 
     try {
-      const [databaseStatus, redisStatus, blockchainStatus, externalStatus] =
-        await Promise.all([
-          this.checkDatabase(),
-          this.checkRedis(),
-          this.checkBlockchainConnections(),
-          this.checkExternalServices(),
-        ]);
+      const [databaseStatus, redisStatus, blockchainStatus, externalStatus] = await Promise.all([
+        this.checkDatabase(),
+        this.checkRedis(),
+        this.checkBlockchainConnections(),
+        this.checkExternalServices(),
+      ]);
 
       const overallStatus = this.determineOverallStatus([
         databaseStatus,
@@ -80,8 +79,7 @@ export class HealthService {
     } catch (error) {
       return {
         status: "unhealthy",
-        error:
-          error instanceof Error ? error.message : "Database connection failed",
+        error: error instanceof Error ? error.message : "Database connection failed",
       };
     }
   }
@@ -111,8 +109,7 @@ export class HealthService {
     } catch (error) {
       return {
         status: "unhealthy",
-        error:
-          error instanceof Error ? error.message : "Redis connection failed",
+        error: error instanceof Error ? error.message : "Redis connection failed",
       };
     }
   }
@@ -129,15 +126,12 @@ export class HealthService {
       starknet:
         checks[0].status === "fulfilled"
           ? checks[0].value
-          // TODO: Fix wrong status on failed connection
-          : { status: "healthy", error: "Connection failed" },
+          : // TODO: Fix wrong status on failed connection
+            { status: "healthy", error: "Connection failed" },
     };
   }
 
-  private async checkBlockchainRPC(
-    name: string,
-    rpcUrl: string,
-  ): Promise<DependencyStatus> {
+  private async checkBlockchainRPC(name: string, rpcUrl: string): Promise<DependencyStatus> {
     const startTime = Date.now();
 
     try {
@@ -156,10 +150,7 @@ export class HealthService {
     } catch (error) {
       return {
         status: "unhealthy",
-        error:
-          error instanceof Error
-            ? error.message
-            : `${name} RPC connection failed`,
+        error: error instanceof Error ? error.message : `${name} RPC connection failed`,
       };
     }
   }
@@ -188,10 +179,7 @@ export class HealthService {
     } catch (error) {
       return {
         status: "unhealthy",
-        error:
-          error instanceof Error
-            ? error.message
-            : "1inch API connection failed",
+        error: error instanceof Error ? error.message : "1inch API connection failed",
       };
     }
   }
@@ -199,12 +187,8 @@ export class HealthService {
   private determineOverallStatus(
     statuses: DependencyStatus[],
   ): "healthy" | "degraded" | "unhealthy" {
-    const unhealthyCount = statuses.filter(
-      (s) => s.status === "unhealthy",
-    ).length;
-    const degradedCount = statuses.filter(
-      (s) => s.status === "degraded",
-    ).length;
+    const unhealthyCount = statuses.filter((s) => s.status === "unhealthy").length;
+    const degradedCount = statuses.filter((s) => s.status === "degraded").length;
 
     if (unhealthyCount > 0) {
       return "unhealthy";

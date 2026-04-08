@@ -2,11 +2,7 @@ import { type Request, type Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { logger } from "../utils/logger";
 
-export const requestLogger = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
+export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
   const requestId = uuidv4();
   const startTime = Date.now();
 
