@@ -8,6 +8,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import { requestLogger } from "./middleware/requestLogger";
 import { RouteService } from "./services/RouteService";
 import { IntentService } from "./services/IntentService";
+import { HealthService } from "./services/HealthService";
 import { SettlementEngine } from "./settlement/SettlementEngine";
 
 // Import routes
@@ -55,8 +56,8 @@ app.use(requestLogger);
 
 // API routes
 app.use("/api/v1/intents", intentRoutes(intentService));
-app.use("/api/v1/quotes", quoteRoutes);
-app.use("/api/v1/health", healthRoutes);
+app.use("/api/v1/quotes", quoteRoutes(routeService));
+app.use("/api/v1/health", healthRoutes(new HealthService()));
 app.use("/api/v1/chains", chainRoutes);
 
 // 404 handler
@@ -75,9 +76,12 @@ app.use(errorHandler);
 
 const PORT = config.server.port || 3000;
 
-app.listen(PORT, () => {
-  logger.info(`Griffin Orchestrator server running on port ${PORT}`);
-  logger.info(`Environment: ${config.env}`);
-});
+// Only start listening when this file is run directly, not when imported in tests
+if (require.main === module) {
+  app.listen(PORT, () => {
+    logger.info(`Griffin Orchestrator server running on port ${PORT}`);
+    logger.info(`Environment: ${config.env}`);
+  });
+}
 
 export default app;
