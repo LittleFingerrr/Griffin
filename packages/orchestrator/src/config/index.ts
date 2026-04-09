@@ -48,6 +48,12 @@ export const config = {
       accountAddress: process.env.GRIFFIN_STELLAR_ACCOUNT_ADDRESS,
       secretKey: process.env.GRIFFIN_STELLAR_SECRET_KEY,
     },
+    hashkey: {
+      chainId: "eip155:133",
+      rpcUrl: process.env.HASHKEY_RPC_URL || "https://hashkeychain-testnet.alt.technology",
+      vaultAddress: process.env.GRIFFIN_VAULT_ADDRESS || "",
+      operatorPrivateKey: process.env.GRIFFIN_OPERATOR_PRIVATE_KEY || "",
+    },
   },
 
   external: {
