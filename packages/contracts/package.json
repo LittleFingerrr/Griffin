@@ -11,9 +11,16 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@openzeppelin/contracts": "^5.0.1",
+    "@types/node": "^25.6.0",
     "hardhat": "^2.19.4",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.0"
   },
-  "keywords": ["dex", "defi", "hashkey", "griffin"],
+  "keywords": [
+    "dex",
+    "defi",
+    "hashkey",
+    "griffin"
+  ],
   "license": "MIT"
 }
