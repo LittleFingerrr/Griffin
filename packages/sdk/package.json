@@ -1,0 +1,28 @@
+{
+  "name": "@griffin/sdk",
+  "version": "0.1.0",
+  "description": "Griffin SDK — typed HTTP client for the Griffin orchestrator",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "griffin",
+    "cross-chain",
+    "payments",
+    "sdk"
+  ],
+  "author": "Griffin Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.19.39",
+    "tsup": "^8.0.1",
+    "typescript": "^5.9.3"
+  }
+}
