@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { GriffinDEX } from "./GriffinDEX";
+export type { MockERC20 } from "./MockERC20";

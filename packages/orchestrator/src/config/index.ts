@@ -53,6 +53,7 @@ export const config = {
       rpcUrl: process.env.HASHKEY_RPC_URL || "https://hashkeychain-testnet.alt.technology",
       vaultAddress: process.env.GRIFFIN_VAULT_ADDRESS || "",
       operatorPrivateKey: process.env.GRIFFIN_OPERATOR_PRIVATE_KEY || "",
+      dexAddress: process.env.GRIFFIN_DEX_ADDRESS || "",
     },
   },
 

@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { GriffinDEX__factory } from "./GriffinDEX__factory";
+export { MockERC20__factory } from "./MockERC20__factory";
