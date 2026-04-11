@@ -1,0 +1,19 @@
+{
+  "name": "@griffin/contracts",
+  "version": "0.1.0",
+  "description": "Griffin DEX smart contracts for HashKey Chain",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.ts",
+    "deploy:hashkey": "hardhat run scripts/deploy.ts --network hashkey"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.0.1",
+    "hardhat": "^2.19.4",
+    "typescript": "^5.9.0"
+  },
+  "keywords": ["dex", "defi", "hashkey", "griffin"],
+  "license": "MIT"
+}

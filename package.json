@@ -8,8 +8,7 @@
     "url": "https://github.com/OWK50GA/Griffin"
   },
   "workspaces":[
-    "packages/*",
-    "website"
+    "packages/*"
   ],
   "scripts": {
     "build": "pnpm -r build",
