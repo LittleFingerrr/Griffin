@@ -31,10 +31,7 @@ export class SwapSettler implements ISettler {
    */
   private readonly chainClients: Map<string, IChainClient>;
 
-  constructor(
-    dexClients: Map<string, IDexClient>,
-    chainClients: Map<string, IChainClient>,
-  ) {
+  constructor(dexClients: Map<string, IDexClient>, chainClients: Map<string, IChainClient>) {
     this.dexClients = dexClients;
     this.chainClients = chainClients;
 
