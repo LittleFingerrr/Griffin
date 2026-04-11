@@ -10,6 +10,9 @@ import { RouteService } from "./services/RouteService";
 import { IntentService } from "./services/IntentService";
 import { HealthService } from "./services/HealthService";
 import { SettlementEngine } from "./settlement/SettlementEngine";
+import { InventorySettler } from "./settlement/InventorySettler";
+import { EvmClient } from "./blockchain/evm/EvmClient";
+import { type IChainClient } from "./blockchain/IChainClient";
 
 // Import routes
 import intentRoutes from "./routes/intents";
@@ -20,9 +23,26 @@ import chainRoutes from "./routes/chains";
 // --- Composition root --------------------------------------------------------
 // Wire settlers here. Order = preference (first capable settler wins).
 // Add new settlers by importing and appending to the array — nothing else changes.
+
+// Chain clients — one per supported chain
+const chainClients = new Map<string, IChainClient>();
+
+if (config.blockchain.hashkey.operatorPrivateKey) {
+  chainClients.set(
+    config.blockchain.hashkey.chainId,
+    new EvmClient({
+      chainId: config.blockchain.hashkey.chainId,
+      rpcUrl: config.blockchain.hashkey.rpcUrl,
+      privateKey: config.blockchain.hashkey.operatorPrivateKey,
+    }),
+  );
+} else {
+  logger.warn("GRIFFIN_OPERATOR_PRIVATE_KEY not set — InventorySettler will decline all intents");
+}
+
 const routeService = new RouteService();
 const settlementEngine = new SettlementEngine([
-  // new InventorySettler(),   <- add when implemented
+  new InventorySettler(chainClients, config.blockchain.hashkey.vaultAddress),
   // new SwapSettler(routeService),  <- add when implemented
 ]);
 const intentService = new IntentService(settlementEngine);
