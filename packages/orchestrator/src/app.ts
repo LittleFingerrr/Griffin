@@ -11,8 +11,11 @@ import { IntentService } from "./services/IntentService";
 import { HealthService } from "./services/HealthService";
 import { SettlementEngine } from "./settlement/SettlementEngine";
 import { InventorySettler } from "./settlement/InventorySettler";
+import { SwapSettler } from "./settlement/SwapSettler";
 import { EvmClient } from "./blockchain/evm/EvmClient";
+import { DexClient } from "./blockchain/evm/DexClient";
 import { type IChainClient } from "./blockchain/IChainClient";
+import { type IDexClient } from "./blockchain/IDexClient";
 
 // Import routes
 import intentRoutes from "./routes/intents";
@@ -40,10 +43,27 @@ if (config.blockchain.hashkey.operatorPrivateKey) {
   logger.warn("GRIFFIN_OPERATOR_PRIVATE_KEY not set — InventorySettler will decline all intents");
 }
 
+// DEX clients — one per supported chain
+const dexClients = new Map<string, IDexClient>();
+
+if (config.blockchain.hashkey.operatorPrivateKey && config.blockchain.hashkey.dexAddress) {
+  dexClients.set(
+    config.blockchain.hashkey.chainId,
+    new DexClient({
+      chainId: config.blockchain.hashkey.chainId,
+      rpcUrl: config.blockchain.hashkey.rpcUrl,
+      dexAddress: config.blockchain.hashkey.dexAddress,
+      privateKey: config.blockchain.hashkey.operatorPrivateKey,
+    }),
+  );
+} else {
+  logger.warn("GRIFFIN_DEX_ADDRESS not set — SwapSettler will decline all intents");
+}
+
 const routeService = new RouteService();
 const settlementEngine = new SettlementEngine([
   new InventorySettler(chainClients, config.blockchain.hashkey.vaultAddress),
-  // new SwapSettler(routeService),  <- add when implemented
+  new SwapSettler(dexClients, chainClients),
 ]);
 const intentService = new IntentService(settlementEngine);
 // -----------------------------------------------------------------------------
