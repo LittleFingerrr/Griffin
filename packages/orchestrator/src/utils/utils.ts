@@ -1,7 +1,7 @@
 import { config } from "@/config";
 import { type IntentMessageType, type SignatureType, type QuoteRequest } from "@/types";
 import { Keypair, StrKey, rpc } from "@stellar/stellar-sdk";
-import { isAddress } from "ethers";
+import { ethers, isAddress } from "ethers";
 
 const validateStellarAddress = (address: string): boolean => {
   return StrKey.isValidEd25519PublicKey(address);
@@ -40,9 +40,58 @@ export const validateSignature = async (
 ): Promise<boolean> => {
   if (chainId.startsWith("stellar")) {
     return await validateStellarSignature(signature as Buffer, message as Buffer, userAddress);
+  } else if (chainId.startsWith("eip155")) {
+    return validateEvmSignature(chainId, signature as string, message, userAddress);
   }
 
   return false;
+};
+
+const validateEvmSignature = (
+  chainId: string,
+  signature: string,
+  message: IntentMessageType,
+  userAddress: string,
+): boolean => {
+  try {
+    // Parse the message — frontend sends a JSON string
+    const parsed: Record<string, unknown> =
+      typeof message === "string" ? JSON.parse(message) : (message as Record<string, unknown>);
+
+    // Extract the numeric chain ID from "eip155:133" → 133
+    const numericChainId = parseInt(chainId.split(":")[1], 10);
+
+    const domain = {
+      name: "Griffin",
+      version: "1",
+      chainId: numericChainId,
+    };
+
+    const types = {
+      IntentAuthorization: [
+        { name: "fromToken", type: "address" },
+        { name: "toToken", type: "address" },
+        { name: "amount", type: "string" },
+        { name: "recipient", type: "address" },
+        { name: "userAddress", type: "address" },
+        { name: "nonce", type: "uint256" },
+      ],
+    };
+
+    const value = {
+      fromToken: parsed.fromToken as string,
+      toToken: parsed.toToken as string,
+      amount: parsed.amount as string,
+      recipient: parsed.recipient as string,
+      userAddress: parsed.userAddress as string,
+      nonce: BigInt(parsed.nonce as number),
+    };
+
+    const recovered = ethers.verifyTypedData(domain, types, value, signature);
+    return recovered.toLowerCase() === userAddress.toLowerCase();
+  } catch {
+    return false;
+  }
 };
 
 // TODO: Implement Stellar token fetching (e.g. from Stellar Asset List or Soroban token registry)

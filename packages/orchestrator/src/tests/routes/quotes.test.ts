@@ -1,8 +1,8 @@
 import request from "supertest";
 import express from "express";
-import quoteRoutes from "../../src/routes/quotes";
-import { errorHandler } from "../../src/middleware/errorHandler";
-import { RouteService } from "../../src/services/RouteService";
+import quoteRoutes from "../../routes/quotes";
+import { errorHandler } from "../../middleware/errorHandler";
+import { RouteService } from "../../services/RouteService";
 
 const mockGetQuotes = jest.fn();
 const mockRouteService = { getQuotes: mockGetQuotes } as unknown as RouteService;
@@ -45,12 +45,13 @@ describe("POST /api/v1/quotes", () => {
     expect(res.body.bestRoute).toBeDefined();
   });
 
-  it("returns 404 when no routes found", async () => {
+  it("returns 200 with empty routes when no routes found", async () => {
     mockGetQuotes.mockResolvedValue([]);
 
     const res = await request(buildApp()).post("/api/v1/quotes").send(validBody);
-    expect(res.status).toBe(404);
-    expect(res.body.error.code).toBe("NO_ROUTES_AVAILABLE");
+    expect(res.status).toBe(200);
+    expect(res.body.routes).toEqual([]);
+    expect(res.body.bestRoute).toBeNull();
   });
 
   it("returns 400 when amount is missing", async () => {

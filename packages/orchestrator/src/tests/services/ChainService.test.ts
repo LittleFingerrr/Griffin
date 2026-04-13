@@ -1,7 +1,7 @@
-import { ChainService } from "../../src/services/ChainService";
-import * as utils from "../../src/utils/utils";
+import { ChainService } from "../../services/ChainService";
+import * as utils from "../../utils/utils";
 
-jest.mock("../../src/utils/utils", () => ({
+jest.mock("../../utils/utils", () => ({
   GriffinSupportedChains: [
     {
       chainId: "eip155:133",

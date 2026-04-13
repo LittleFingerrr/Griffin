@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { AppError, errorHandler, asyncHandler } from "../../src/middleware/errorHandler";
+import { AppError, errorHandler, asyncHandler } from "../../middleware/errorHandler";
 
 const mockReq = (overrides: Partial<Request> = {}): Request =>
   ({

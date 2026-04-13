@@ -1,11 +1,11 @@
-import { IntentService } from "../../src/services/IntentService";
-import { SettlementEngine } from "../../src/settlement/SettlementEngine";
-import { SettlementResult, SettlerType } from "../../src/settlement/ISettler";
-import { CreateIntentRequest, IntentStatus, RouteInfo } from "../../src/types";
-import * as utils from "../../src/utils/utils";
+import { IntentService } from "../../services/IntentService";
+import { SettlementEngine } from "../../settlement/SettlementEngine";
+import { SettlementResult, SettlerType } from "../../settlement/ISettler";
+import { CreateIntentRequest, IntentStatus, RouteInfo } from "../../types";
+import * as utils from "../../utils/utils";
 
 // Stub out external calls
-jest.mock("../../src/utils/utils", () => ({
+jest.mock("../../utils/utils", () => ({
   GriffinSupportedChains: [
     {
       chainId: "eip155:133",

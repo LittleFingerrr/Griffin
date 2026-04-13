@@ -1,4 +1,4 @@
-import { HealthService } from "../../src/services/HealthService";
+import { HealthService } from "../../services/HealthService";
 
 // Mock redis to avoid real connection attempts
 jest.mock("redis", () => ({

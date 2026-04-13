@@ -3,7 +3,7 @@ import { type Intent, IntentStatus, type CreateIntentRequest } from "../types";
 import { AppError } from "../middleware/errorHandler";
 import { logger } from "../utils/logger";
 import { ChainService } from "./ChainService";
-import { validateAddress } from "@/utils/utils";
+import { validateAddress, validateSignature } from "@/utils/utils";
 import { type SettlementEngine } from "@/settlement/SettlementEngine";
 
 export class IntentService {
@@ -152,15 +152,14 @@ export class IntentService {
     if (!request.requestSignature) {
       throw new AppError("No signature provided", 400, "MISSING_SIGNATURE");
     }
-    // const isValidSignature = validateSignature(
-    //   request.fromChain,
-    //   request.requestSignature,
-    //   request.requestMessage,
-    //   request.userAddress,
-    // );
-    // TODO: Use isValidSignature result, not duplicate check
-    if (!request.requestSignature) {
-      throw new AppError("Invalid signature", 400, "MISSING_SIGNATURE");
+    const isValidSignature = validateSignature(
+      request.fromChain,
+      request.requestSignature,
+      request.requestMessage,
+      request.userAddress,
+    );
+    if (!isValidSignature) {
+      throw new AppError("Invalid signature", 400, "INVALID_SIGNATURE");
     }
   }
 }

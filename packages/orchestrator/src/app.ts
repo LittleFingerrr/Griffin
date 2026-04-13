@@ -76,6 +76,8 @@ app.get("/health", (req: Request, res: Response) => {
   });
 });
 
+app.use(cors());
+
 // Security middleware
 app.use(helmet());
 app.use(

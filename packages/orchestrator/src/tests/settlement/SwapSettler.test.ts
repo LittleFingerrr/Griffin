@@ -1,20 +1,20 @@
-import { SwapSettler } from "../../src/settlement/SwapSettler";
-import { SettlerType } from "../../src/settlement/ISettler";
-import { type IDexClient, type DexQuote } from "../../src/blockchain/IDexClient";
-import { type IChainClient } from "../../src/blockchain/IChainClient";
-import { type Intent, IntentStatus } from "../../src/types";
+import { SwapSettler } from "../../settlement/SwapSettler";
+import { SettlerType } from "../../settlement/ISettler";
+import { type IDexClient, type DexQuote } from "../../blockchain/IDexClient";
+import { type IChainClient } from "../../blockchain/IChainClient";
+import { type Intent, IntentStatus } from "../../types";
 import { ethers } from "ethers";
 
 // ---------------------------------------------------------------------------
 // Mocks
 // ---------------------------------------------------------------------------
 
-jest.mock("../../src/utils/utils", () => ({
+jest.mock("../../utils/utils", () => ({
   getStellarTokens: jest.fn().mockResolvedValue([]),
   validateAddress: jest.fn().mockReturnValue(true),
 }));
 
-jest.mock("../../src/services/ChainService", () => ({
+jest.mock("../../services/ChainService", () => ({
   ChainService: jest.fn().mockImplementation(() => ({
     getTokenInfo: jest.fn().mockResolvedValue({ decimals: 18 }),
   })),

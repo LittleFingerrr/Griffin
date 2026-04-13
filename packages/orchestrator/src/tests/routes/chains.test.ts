@@ -1,9 +1,9 @@
 import request from "supertest";
 import express from "express";
-import chainRoutes from "../../src/routes/chains";
-import { errorHandler } from "../../src/middleware/errorHandler";
+import chainRoutes from "../../routes/chains";
+import { errorHandler } from "../../middleware/errorHandler";
 
-jest.mock("../../src/utils/utils", () => ({
+jest.mock("../../utils/utils", () => ({
   GriffinSupportedChains: [
     {
       chainId: "eip155:133",

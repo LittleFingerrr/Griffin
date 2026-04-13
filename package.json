@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/OWK50GA/Griffin"
   },
-  "workspaces":[
+  "workspaces": [
     "packages/*"
   ],
   "scripts": {
@@ -20,7 +20,10 @@
   "license": "MIT",
   "packageManager": "pnpm@10.24.0",
   "devDependencies": {
-    "typescript": "^5.9.0",
-    "tsup": "^8.5.0"
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
   }
 }
