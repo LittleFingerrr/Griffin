@@ -1,7 +1,7 @@
 import { config } from "@/config";
 import { type IntentMessageType, type SignatureType, type QuoteRequest } from "@/types";
 import { Keypair, StrKey, rpc } from "@stellar/stellar-sdk";
-import { isAddress } from "ethers"
+import { isAddress } from "ethers";
 
 const validateStellarAddress = (address: string): boolean => {
   return StrKey.isValidEd25519PublicKey(address);
@@ -12,8 +12,8 @@ export const validateAddress = (chainId: string, address: string): boolean => {
     return validateStellarAddress(address);
   } else if (chainId.startsWith("eip155")) {
     // EVMs would be: if chainId.startsWith(eip155);
-      console.log("Checking evm address");
-      return isAddress(address);
+    console.log("Checking evm address");
+    return isAddress(address);
   }
 
   return false;

@@ -20,8 +20,8 @@ export class ChainService {
       symbol: "HSK",
       rpcUrl: "https://testnet.hsk.xyz",
       blockExplorer: "https://testnet-explorer.hsk.xyz",
-      isTestnet: true
-    }
+      isTestnet: true,
+    },
   ];
 
   private supportedTokens: TokenInfo[];
@@ -51,15 +51,15 @@ export class ChainService {
       symbol: "tHSK",
       name: "Test HSK",
       decimals: 18,
-      chainId: "eip155:133"
+      chainId: "eip155:133",
     });
     this.supportedTokens.push({
       address: "0xc4C2841367016C9e2652Fecc49bBA9229787bA82",
       symbol: "tUSDC",
       name: "Test USDC",
       decimals: 6,
-      chainId: "eip155:133"
-    })
+      chainId: "eip155:133",
+    });
 
     // Add more functions when adding new chains
   }

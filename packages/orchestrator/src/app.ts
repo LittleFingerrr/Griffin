@@ -72,9 +72,9 @@ const app: Express = express();
 
 app.get("/health", (req: Request, res: Response) => {
   res.json({
-    status: "responding"
-  })
-})
+    status: "responding",
+  });
+});
 
 // Security middleware
 app.use(helmet());
