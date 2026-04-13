@@ -69,22 +69,22 @@ const validateEvmSignature = (
 
     const types = {
       IntentAuthorization: [
-        { name: "fromToken",    type: "address" },
-        { name: "toToken",      type: "address" },
-        { name: "amount",       type: "string"  },
-        { name: "recipient",    type: "address" },
-        { name: "userAddress",  type: "address" },
-        { name: "nonce",        type: "uint256" },
+        { name: "fromToken", type: "address" },
+        { name: "toToken", type: "address" },
+        { name: "amount", type: "string" },
+        { name: "recipient", type: "address" },
+        { name: "userAddress", type: "address" },
+        { name: "nonce", type: "uint256" },
       ],
     };
 
     const value = {
-      fromToken:   parsed.fromToken   as string,
-      toToken:     parsed.toToken     as string,
-      amount:      parsed.amount      as string,
-      recipient:   parsed.recipient   as string,
+      fromToken: parsed.fromToken as string,
+      toToken: parsed.toToken as string,
+      amount: parsed.amount as string,
+      recipient: parsed.recipient as string,
       userAddress: parsed.userAddress as string,
-      nonce:       BigInt(parsed.nonce as number),
+      nonce: BigInt(parsed.nonce as number),
     };
 
     const recovered = ethers.verifyTypedData(domain, types, value, signature);
