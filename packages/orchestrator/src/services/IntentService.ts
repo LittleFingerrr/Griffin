@@ -158,9 +158,8 @@ export class IntentService {
       request.requestMessage,
       request.userAddress,
     );
-    // TODO: Use isValidSignature result, not duplicate check
-    if (!request.requestSignature) {
-      throw new AppError("Invalid signature", 400, "MISSING_SIGNATURE");
+    if (!isValidSignature) {
+      throw new AppError("Invalid signature", 400, "INVALID_SIGNATURE");
     }
   }
 }
