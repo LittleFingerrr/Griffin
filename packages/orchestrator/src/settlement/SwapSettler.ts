@@ -8,8 +8,8 @@ import {
 import { type Intent } from "../types";
 import { type IDexClient } from "../blockchain/IDexClient";
 import { type IChainClient } from "../blockchain/IChainClient";
-import { ChainService } from "@/services/ChainService";
-import { AppError } from "@/middleware/errorHandler";
+import { ChainService } from "../services/ChainService";
+import { AppError } from "../middleware/errorHandler";
 import { logger } from "../utils/logger";
 import { GriffinSupportedTokens } from "../utils/utils";
 

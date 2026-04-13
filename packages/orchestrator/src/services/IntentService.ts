@@ -4,7 +4,7 @@ import { AppError } from "../middleware/errorHandler";
 import { logger } from "../utils/logger";
 import { ChainService } from "./ChainService";
 import { validateAddress, validateSignature } from "../utils/utils";
-import { type SettlementEngine } from "@/settlement/SettlementEngine";
+import { type SettlementEngine } from "../settlement/SettlementEngine";
 
 export class IntentService {
   private intents: Map<string, Intent> = new Map();

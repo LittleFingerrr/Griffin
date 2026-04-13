@@ -1,5 +1,5 @@
-import { config } from "@/config";
-import { type IntentMessageType, type SignatureType, type QuoteRequest } from "@/types";
+import { config } from "../config";
+import { type IntentMessageType, type SignatureType, type QuoteRequest } from "../types";
 import { Keypair, StrKey, rpc } from "@stellar/stellar-sdk";
 import { ethers, isAddress } from "ethers";
 

@@ -1,4 +1,4 @@
-import { type DependencyStatus, type HealthStatus } from "@/types";
+import { type DependencyStatus, type HealthStatus } from "../types";
 import { config } from "../config";
 import { logger } from "../utils/logger";
 // import { RpcProvider } from "starknet";
