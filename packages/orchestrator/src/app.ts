@@ -70,6 +70,12 @@ const intentService = new IntentService(settlementEngine);
 
 const app: Express = express();
 
+app.get("/health", (req: Request, res: Response) => {
+  res.json({
+    status: "responding",
+  });
+});
+
 // Security middleware
 app.use(helmet());
 app.use(
@@ -101,7 +107,7 @@ app.use("/api/v1/health", healthRoutes(new HealthService()));
 app.use("/api/v1/chains", chainRoutes);
 
 // 404 handler
-app.use("*", (req: Request, res: Response) => {
+app.use("/{*path}", (req: Request, res: Response) => {
   res.status(404).json({
     error: {
       code: "NOT_FOUND",

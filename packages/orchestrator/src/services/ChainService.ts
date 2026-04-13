@@ -1,45 +1,22 @@
 import { type ChainInfo, type TokenInfo } from "../types";
 import { AppError } from "../middleware/errorHandler";
-import { getStellarTokens } from "@/utils/utils";
+import { GriffinSupportedChains } from "@/utils/utils";
 
 export class ChainService {
   /* 
-    STARKNET ONLY FOR FIRST ITERATION
+    HASHKEY ONLY FOR FIRST ITERATION
+    TODO: Add configuration for user to actually add their token, 
+    with what you need, and check availability on a suitable swap, stuff like that
   */
-  private static supportedChains: ChainInfo[] = [
-    {
-      chainId: "stellar:testnet",
-      name: "Stellar",
-      symbol: "Stellar",
-      rpcUrl: "https://horizon-testnet.stellar.org",
-      blockExplorer: "https://stellar.expert/explorer/testnet",
-      isTestnet: true,
-    },
-  ];
+  private static supportedChains: ChainInfo[] = GriffinSupportedChains;
 
+  // I think this should be static
   private supportedTokens: TokenInfo[];
 
-  constructor() {
-    this.supportedTokens = [];
-
-    // TODO: Handle token fetch errors in constructor
-    getStellarTokens().then((tokens) => {
-      tokens.forEach((token: any) => {
-        const equivGriffinToken = {
-          address: token.address,
-          decimals: token.decimals,
-          logoUrl: token.logoUri!,
-          // TODO: Fix hardcoded wrong chainId here
-          chainId: "starknet:sepolia", // Change this when deploying to mainnet
-          name: token.name,
-          symbol: token.symbol,
-        };
-
-        this.supportedTokens.push(equivGriffinToken);
-      });
-    });
-
-    // Add more functions when adding new chains
+  constructor(supportedTokens: TokenInfo[]) {
+    // Dynamically add tokens when you can load tokens,
+    // but from the outside party calling this constructor, not here
+    this.supportedTokens = supportedTokens;
   }
 
   static async getSupportedChains(): Promise<ChainInfo[]> {

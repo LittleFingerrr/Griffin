@@ -1,6 +1,7 @@
 import { config } from "@/config";
 import { type IntentMessageType, type SignatureType, type QuoteRequest } from "@/types";
 import { Keypair, StrKey, rpc } from "@stellar/stellar-sdk";
+import { isAddress } from "ethers";
 
 const validateStellarAddress = (address: string): boolean => {
   return StrKey.isValidEd25519PublicKey(address);
@@ -9,9 +10,11 @@ const validateStellarAddress = (address: string): boolean => {
 export const validateAddress = (chainId: string, address: string): boolean => {
   if (chainId.startsWith("stellar")) {
     return validateStellarAddress(address);
+  } else if (chainId.startsWith("eip155")) {
+    // EVMs would be: if chainId.startsWith(eip155);
+    console.log("Checking evm address");
+    return isAddress(address);
   }
-
-  // EVMs would be: if chainId.startsWith(eip155);
 
   return false;
 };
@@ -71,3 +74,39 @@ export const executeStellarSwap = async (): Promise<string> => {
 
   throw new Error("Stellar swap not yet implemented");
 };
+
+// ---------------------------------------------------------------------------//
+// -----------------------------DATA------------------------------------------//
+// ---------------------------------------------------------------------------//
+
+/// To support a chain, just add the chain details to this array;
+
+export const GriffinSupportedChains = [
+  {
+    chainId: "eip155:133",
+    name: "Hashkey Testnet",
+    symbol: "HSK",
+    rpcUrl: "https://testnet.hsk.xyz",
+    blockExplorer: "https://testnet-explorer.hsk.xyz",
+    isTestnet: true,
+  },
+];
+
+/// To support a token, just add the token details to this array;
+
+export const GriffinSupportedTokens = [
+  {
+    address: "0xb8F355f10569FD2A765296161d082Cc37c5843c2",
+    symbol: "tHSK",
+    name: "Test HSK",
+    decimals: 18,
+    chainId: "eip155:133",
+  },
+  {
+    address: "0xc4C2841367016C9e2652Fecc49bBA9229787bA82",
+    symbol: "tUSDC",
+    name: "Test USDC",
+    decimals: 6,
+    chainId: "eip155:133",
+  },
+];

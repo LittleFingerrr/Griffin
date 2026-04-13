@@ -73,7 +73,7 @@ export class GriffinClient {
 
   /** Trigger execution of a verified intent. */
   async executeIntent(intentId: string): Promise<IntentResponse> {
-    return this.post<IntentResponse>(`/api/v1/intents/${intentId}/execute`, {});
+    return this.put<IntentResponse>(`/api/v1/intents/${intentId}/execute`);
   }
 
   /** Cancel a pending intent. */
@@ -118,6 +118,10 @@ export class GriffinClient {
 
   private async post<T>(path: string, body: unknown): Promise<T> {
     return this.request<T>("POST", path, body);
+  }
+
+  private async put<T>(path: string, body?: unknown): Promise<T> {
+    return this.request<T>("PUT", path, body);
   }
 
   private async delete(path: string): Promise<void> {

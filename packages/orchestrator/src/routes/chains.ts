@@ -1,9 +1,11 @@
 import { Router, type Request, type Response } from "express";
 import { asyncHandler } from "../middleware/errorHandler";
 import { ChainService } from "../services/ChainService";
+import { GriffinSupportedTokens } from "@/utils/utils";
 
 const router: Router = Router();
-const chainService = new ChainService();
+const supportedTokens = GriffinSupportedTokens;
+const chainService = new ChainService(supportedTokens);
 
 // GET /api/v1/chains - Get supported chains
 router.get(
