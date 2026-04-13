@@ -15,6 +15,14 @@ export class ChainService {
       blockExplorer: "https://stellar.expert/explorer/testnet",
       isTestnet: true,
     },
+    {
+      chainId: "eip155:133",
+      name: "Hashkey Testnet",
+      symbol: "HSK",
+      rpcUrl: "https://testnet.hsk.xyz",
+      blockExplorer: "https://testnet-explorer.hsk.xyz",
+      isTestnet: true
+    }
   ];
 
   private supportedTokens: TokenInfo[];
@@ -23,21 +31,36 @@ export class ChainService {
     this.supportedTokens = [];
 
     // TODO: Handle token fetch errors in constructor
-    getStellarTokens().then((tokens) => {
-      tokens.forEach((token: any) => {
-        const equivGriffinToken = {
-          address: token.address,
-          decimals: token.decimals,
-          logoUrl: token.logoUri!,
-          // TODO: Fix hardcoded wrong chainId here
-          chainId: "starknet:sepolia", // Change this when deploying to mainnet
-          name: token.name,
-          symbol: token.symbol,
-        };
+    // getStellarTokens().then((tokens) => {
+    //   tokens.forEach((token: any) => {
+    //     const equivGriffinToken = {
+    //       address: token.address,
+    //       decimals: token.decimals,
+    //       logoUrl: token.logoUri!,
+    //       // TODO: Fix hardcoded wrong chainId here
+    //       chainId: "starknet:sepolia", // Change this when deploying to mainnet
+    //       name: token.name,
+    //       symbol: token.symbol,
+    //     };
 
-        this.supportedTokens.push(equivGriffinToken);
-      });
+    //     this.supportedTokens.push(equivGriffinToken);
+    //   });
+    // });
+
+    this.supportedTokens.push({
+      address: "0xb8F355f10569FD2A765296161d082Cc37c5843c2",
+      symbol: "tHSK",
+      name: "Test HSK",
+      decimals: 18,
+      chainId: "eip155:133"
     });
+    this.supportedTokens.push({
+      address: "0xc4C2841367016C9e2652Fecc49bBA9229787bA82",
+      symbol: "tUSDC",
+      name: "Test USDC",
+      decimals: 6,
+      chainId: "eip155:133"
+    })
 
     // Add more functions when adding new chains
   }

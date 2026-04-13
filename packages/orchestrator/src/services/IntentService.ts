@@ -129,22 +129,22 @@ export class IntentService {
 
     const isValidSenderAddress = validateAddress(request.fromChain, request.userAddress);
     if (!isValidSenderAddress) {
-      throw new AppError("Sender address not valid on chain", 400, "INVALID_ADDRESS");
+      throw new AppError("Sender address not too valid on chain", 400, "INVALID_ADDRESS");
     }
 
     const isValidRecipientAddress = validateAddress(request.toChain, request.recipient);
     if (!isValidRecipientAddress) {
-      throw new AppError("Sender address not valid on chain", 400, "INVALID_ADDRESS");
+      throw new AppError("Recipient address not valid on chain", 400, "INVALID_ADDRESS");
     }
 
     const isValidInputTokenAddress = validateAddress(request.fromChain, request.fromToken);
     if (!isValidInputTokenAddress) {
-      throw new AppError("Sender address not valid on chain", 400, "INVALID_ADDRESS");
+      throw new AppError("Input token address not valid on chain", 400, "INVALID_ADDRESS");
     }
 
     const isValidOutputTokenAddress = validateAddress(request.toChain, request.toToken);
     if (!isValidOutputTokenAddress) {
-      throw new AppError("Sender address not valid on chain", 400, "INVALID_ADDRESS");
+      throw new AppError("Output token address not valid on chain", 400, "INVALID_ADDRESS");
     }
 
     // Additional validations would go here:

@@ -55,7 +55,7 @@ Create `.env` file:
 
 ```bash
 PRIVATE_KEY=your_private_key_here
-HASHKEY_RPC_URL=https://hashkeychain-testnet.alt.technology
+HASHKEY_RPC_URL=https://testnet.hsk.xyz
 ```
 
 ## Compile

@@ -156,6 +156,13 @@ describe("GriffinClient request mechanics", () => {
     expect(spy.mock.calls[0][1]?.method).toBe("DELETE");
   });
 
+  it("sends method PUT for executeIntent", async () => {
+    const spy = mockFetch(200, { intentId: "x", status: "executing", createdAt: "now" });
+    vi.stubGlobal("fetch", spy);
+    await client.executeIntent("intent-1");
+    expect(spy.mock.calls[0][1]?.method).toBe("PUT");
+  });
+
   it("does not send a body on GET requests", async () => {
     const spy = mockFetch(200, { status: "healthy", timestamp: "now", version: "1" });
     vi.stubGlobal("fetch", spy);
