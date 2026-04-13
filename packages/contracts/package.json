@@ -8,7 +8,8 @@
     "deploy": "hardhat run scripts/deploy.ts",
     "deploy:hashkey": "hardhat run scripts/deploy.ts --network hashkey",
     "check-balance": "hardhat run scripts/check-balance.ts --network hashkey",
-    "deploy:tokens": "hardhat run scripts/deployTokens.ts --network hashkey"
+    "deploy:tokens": "hardhat run scripts/deployTokens.ts --network hashkey",
+    "approve:tokens": "hardhat run scripts/approveTokens.ts --network hashkey"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
