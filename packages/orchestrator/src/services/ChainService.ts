@@ -1,6 +1,6 @@
 import { type ChainInfo, type TokenInfo } from "../types";
 import { AppError } from "../middleware/errorHandler";
-import { GriffinSupportedChains } from "@/utils/utils";
+import { GriffinSupportedChains } from "../utils/utils";
 
 export class ChainService {
   /* 

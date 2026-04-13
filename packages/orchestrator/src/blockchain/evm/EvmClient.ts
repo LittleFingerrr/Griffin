@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { type IChainClient } from "../IChainClient";
-import { logger } from "@/utils/logger";
+import { logger } from "../../utils/logger";
 
 // Minimal ERC-20 ABI — only the functions we actually call
 const ERC20_ABI = [

@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { type IDexClient, type DexQuote } from "../IDexClient";
-import { logger } from "@/utils/logger";
+import { logger } from "../../utils/logger";
 
 // Minimal GriffinDEX ABI — only the functions SwapSettler needs
 const GRIFFIN_DEX_ABI = [

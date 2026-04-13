@@ -3,7 +3,7 @@ import { type Intent, IntentStatus, type CreateIntentRequest } from "../types";
 import { AppError } from "../middleware/errorHandler";
 import { logger } from "../utils/logger";
 import { ChainService } from "./ChainService";
-import { validateAddress, validateSignature } from "@/utils/utils";
+import { validateAddress, validateSignature } from "../utils/utils";
 import { type SettlementEngine } from "@/settlement/SettlementEngine";
 
 export class IntentService {

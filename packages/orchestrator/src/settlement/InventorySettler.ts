@@ -9,8 +9,8 @@ import { type Intent } from "../types";
 import { type IChainClient } from "../blockchain/IChainClient";
 import { ChainService } from "@/services/ChainService";
 import { AppError } from "@/middleware/errorHandler";
-import { logger } from "@/utils/logger";
-import { GriffinSupportedTokens } from "@/utils/utils";
+import { logger } from "../utils/logger";
+import { GriffinSupportedTokens } from "../utils/utils";
 
 export class InventorySettler implements ISettler {
   readonly type = SettlerType.INVENTORY;
