@@ -34,19 +34,10 @@ export default function quoteRoutes(routeService: RouteService): Router {
       const quoteRequest: QuoteRequest = req.body;
       const routes = await routeService.getQuotes(quoteRequest);
 
-      if (routes.length === 0) {
-        throw new AppError("No viable routes found", 404, "NO_ROUTES_AVAILABLE", {
-          fromChain: quoteRequest.fromChain,
-          toChain: quoteRequest.toChain,
-          fromToken: quoteRequest.fromToken,
-          toToken: quoteRequest.toToken,
-        });
-      }
-
       const response: QuoteResponse = {
+        serviceId: routes[0]?.serviceId ?? "",
         routes,
-        serviceId: routes[0].serviceId,
-        bestRoute: routes[0],
+        bestRoute: routes[0] ?? null,
         timestamp: new Date().toISOString(),
         expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
       };

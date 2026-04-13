@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { requestLogger } from "../../src/middleware/requestLogger";
+import { requestLogger } from "../../middleware/requestLogger";
 
 const mockReq = (overrides: Partial<Request> = {}): Request =>
   ({

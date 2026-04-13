@@ -1,20 +1,20 @@
-import { InventorySettler } from "../../src/settlement/InventorySettler";
-import { SettlerType } from "../../src/settlement/ISettler";
-import { type IChainClient } from "../../src/blockchain/IChainClient";
-import { type Intent, IntentStatus } from "../../src/types";
+import { InventorySettler } from "../../settlement/InventorySettler";
+import { SettlerType } from "../../settlement/ISettler";
+import { type IChainClient } from "../../blockchain/IChainClient";
+import { type Intent, IntentStatus } from "../../types";
 import { ethers } from "ethers";
 
 // ---------------------------------------------------------------------------
 // Mocks
 // ---------------------------------------------------------------------------
 
-jest.mock("../../src/utils/utils", () => ({
+jest.mock("../../utils/utils", () => ({
   getStellarTokens: jest.fn().mockResolvedValue([]),
   validateAddress: jest.fn().mockReturnValue(true),
 }));
 
 // Mock ChainService so getTokenInfo returns 18 decimals by default
-jest.mock("../../src/services/ChainService", () => ({
+jest.mock("../../services/ChainService", () => ({
   ChainService: jest.fn().mockImplementation(() => ({
     getTokenInfo: jest.fn().mockResolvedValue({ decimals: 18 }),
   })),

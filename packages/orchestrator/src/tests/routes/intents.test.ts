@@ -1,12 +1,12 @@
 import request from "supertest";
 import express from "express";
-import intentRoutes from "../../src/routes/intents";
-import { errorHandler } from "../../src/middleware/errorHandler";
-import { IntentService } from "../../src/services/IntentService";
-import { SettlementEngine } from "../../src/settlement/SettlementEngine";
-import { IntentStatus } from "../../src/types";
+import intentRoutes from "../../routes/intents";
+import { errorHandler } from "../../middleware/errorHandler";
+import { IntentService } from "../../services/IntentService";
+import { SettlementEngine } from "../../settlement/SettlementEngine";
+import { IntentStatus } from "../../types";
 
-jest.mock("../../src/utils/utils", () => ({
+jest.mock("../../utils/utils", () => ({
   GriffinSupportedChains: [
     {
       chainId: "eip155:133",

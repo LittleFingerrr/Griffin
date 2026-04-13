@@ -1,8 +1,8 @@
 import request from "supertest";
 import express from "express";
-import healthRoutes from "../../src/routes/health";
-import { errorHandler } from "../../src/middleware/errorHandler";
-import { HealthService } from "../../src/services/HealthService";
+import healthRoutes from "../../routes/health";
+import { errorHandler } from "../../middleware/errorHandler";
+import { HealthService } from "../../services/HealthService";
 
 const mockGetHealthStatus = jest.fn();
 const mockHealthService = { getHealthStatus: mockGetHealthStatus } as unknown as HealthService;

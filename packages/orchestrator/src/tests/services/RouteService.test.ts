@@ -1,5 +1,5 @@
-import { RouteService } from "../../src/services/RouteService";
-import { QuoteRequest } from "../../src/types";
+import { RouteService } from "../../services/RouteService";
+import { QuoteRequest } from "../../types";
 
 const baseRequest: QuoteRequest = {
   fromChain: "stellar:testnet",
