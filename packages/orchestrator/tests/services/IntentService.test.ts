@@ -6,7 +6,17 @@ import * as utils from "../../src/utils/utils";
 
 // Stub out external calls
 jest.mock("../../src/utils/utils", () => ({
-  getStellarTokens: jest.fn().mockResolvedValue([]),
+  GriffinSupportedChains: [
+    {
+      chainId: "eip155:133",
+      name: "Hashkey Testnet",
+      symbol: "HSK",
+      rpcUrl: "https://testnet.hsk.xyz",
+      blockExplorer: "https://testnet-explorer.hsk.xyz",
+      isTestnet: true,
+    },
+  ],
+  GriffinSupportedTokens: [],
   validateAddress: jest.fn().mockReturnValue(true),
   validateSignature: jest.fn().mockResolvedValue(true),
 }));
@@ -48,13 +58,13 @@ const makeEngine = (result?: SettlementResult, shouldThrow?: Error) => {
 };
 
 const validRequest: CreateIntentRequest = {
-  fromChain: "stellar:testnet",
-  toChain: "stellar:testnet",
-  fromToken: "GABCDE",
-  toToken: "GXYZ12",
+  fromChain: "eip155:133",
+  toChain: "eip155:133",
+  fromToken: "0xb8F355f10569FD2A765296161d082Cc37c5843c2",
+  toToken: "0xc4C2841367016C9e2652Fecc49bBA9229787bA82",
   amount: "100",
-  recipient: "GRECIPIENT",
-  userAddress: "GSENDER",
+  recipient: "0xB1655beD2370B9Ad33Dd4ab905a7923D29Ab6778",
+  userAddress: "0xB1655beD2370B9Ad33Dd4ab905a7923D29Ab6778",
   requestSignature: "sig",
   requestMessage: "msg",
 };

@@ -10,6 +10,7 @@ import { type IChainClient } from "../blockchain/IChainClient";
 import { ChainService } from "@/services/ChainService";
 import { AppError } from "@/middleware/errorHandler";
 import { logger } from "@/utils/logger";
+import { GriffinSupportedTokens } from "@/utils/utils";
 
 export class InventorySettler implements ISettler {
   readonly type = SettlerType.INVENTORY;
@@ -79,7 +80,7 @@ export class InventorySettler implements ISettler {
     }
 
     // Resolve token decimals from ChainService so we parse the amount correctly
-    const chainService = new ChainService();
+    const chainService = new ChainService(GriffinSupportedTokens);
     const tokenInfo = await chainService.getTokenInfo(intent.toToken, intent.toChain);
     const decimals = tokenInfo?.decimals ?? 18; // fall back to 18 if unknown
 

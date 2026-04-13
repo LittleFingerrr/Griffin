@@ -1,14 +1,37 @@
 import { ChainService } from "../../src/services/ChainService";
-import { AppError } from "../../src/middleware/errorHandler";
 import * as utils from "../../src/utils/utils";
 
-// ChainService constructor calls getStellarTokens — stub it out
 jest.mock("../../src/utils/utils", () => ({
-  ...jest.requireActual("../../src/utils/utils"),
-  getStellarTokens: jest.fn().mockResolvedValue([]),
+  GriffinSupportedChains: [
+    {
+      chainId: "eip155:133",
+      name: "Hashkey Testnet",
+      symbol: "HSK",
+      rpcUrl: "https://testnet.hsk.xyz",
+      blockExplorer: "https://testnet-explorer.hsk.xyz",
+      isTestnet: true,
+    },
+  ],
+  GriffinSupportedTokens: [
+    {
+      address: "0xb8F355f10569FD2A765296161d082Cc37c5843c2",
+      symbol: "tHSK",
+      name: "Test HSK",
+      decimals: 18,
+      chainId: "eip155:133",
+    },
+    {
+      address: "0xc4C2841367016C9e2652Fecc49bBA9229787bA82",
+      symbol: "tUSDC",
+      name: "Test USDC",
+      decimals: 6,
+      chainId: "eip155:133",
+    },
+  ],
+  validateAddress: jest.fn().mockReturnValue(true),
 }));
 
-const STELLAR_TESTNET = "stellar:testnet";
+const HASHKEY_TESTNET = "eip155:133";
 
 describe("ChainService — static methods", () => {
   it("getSupportedChains returns at least one chain", async () => {
@@ -19,13 +42,13 @@ describe("ChainService — static methods", () => {
   it("getSupportedChains includes stellar:testnet", async () => {
     const chains = await ChainService.getSupportedChains();
     const ids = chains.map((c) => c.chainId);
-    expect(ids).toContain(STELLAR_TESTNET);
+    expect(ids).toContain(HASHKEY_TESTNET);
   });
 
   it("getChainInfo returns chain for known chainId", async () => {
-    const chain = await ChainService.getChainInfo(STELLAR_TESTNET);
+    const chain = await ChainService.getChainInfo(HASHKEY_TESTNET);
     expect(chain).not.toBeNull();
-    expect(chain!.chainId).toBe(STELLAR_TESTNET);
+    expect(chain!.chainId).toBe(HASHKEY_TESTNET);
   });
 
   it("getChainInfo returns null for unknown chainId", async () => {
@@ -34,7 +57,7 @@ describe("ChainService — static methods", () => {
   });
 
   it("isChainSupported returns true for stellar:testnet", async () => {
-    expect(await ChainService.isChainSupported(STELLAR_TESTNET)).toBe(true);
+    expect(await ChainService.isChainSupported(HASHKEY_TESTNET)).toBe(true);
   });
 
   it("isChainSupported returns false for unknown chain", async () => {
@@ -46,34 +69,35 @@ describe("ChainService — instance methods", () => {
   let service: ChainService;
 
   beforeEach(() => {
-    service = new ChainService();
+    service = new ChainService(utils.GriffinSupportedTokens);
   });
 
   it("getSupportedTokens returns empty array when no tokens loaded", async () => {
+    service = new ChainService([]);
     const tokens = await service.getSupportedTokens();
     expect(tokens).toEqual([]);
   });
 
   it("getSupportedTokens throws 404 when chainId has no tokens", async () => {
-    await expect(service.getSupportedTokens(STELLAR_TESTNET)).rejects.toMatchObject({
+    await expect(service.getSupportedTokens("eip155:1")).rejects.toMatchObject({
       statusCode: 404,
       code: "NO_TOKENS_FOUND",
     });
   });
 
   it("isTokenSupported returns false when no tokens loaded", async () => {
-    const result = await service.isTokenSupported("GTOKEN", STELLAR_TESTNET);
+    const result = await service.isTokenSupported("GTOKEN", HASHKEY_TESTNET);
     expect(result).toBe(false);
   });
 
   it("getTokenInfo returns null when no tokens loaded", async () => {
-    const result = await service.getTokenInfo("GTOKEN", STELLAR_TESTNET);
+    const result = await service.getTokenInfo("GTOKEN", HASHKEY_TESTNET);
     expect(result).toBeNull();
   });
 
   describe("with tokens loaded", () => {
-    const TOKEN_ADDRESS = "GABCDE1234567890";
-    const TOKEN_CHAIN = STELLAR_TESTNET;
+    const TOKEN_ADDRESS = "0x1ba23455678ab";
+    const TOKEN_CHAIN = HASHKEY_TESTNET;
 
     beforeEach(() => {
       // Inject tokens directly into the private field for testing

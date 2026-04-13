@@ -74,3 +74,39 @@ export const executeStellarSwap = async (): Promise<string> => {
 
   throw new Error("Stellar swap not yet implemented");
 };
+
+// ---------------------------------------------------------------------------//
+// -----------------------------DATA------------------------------------------//
+// ---------------------------------------------------------------------------//
+
+/// To support a chain, just add the chain details to this array;
+
+export const GriffinSupportedChains = [
+  {
+    chainId: "eip155:133",
+    name: "Hashkey Testnet",
+    symbol: "HSK",
+    rpcUrl: "https://testnet.hsk.xyz",
+    blockExplorer: "https://testnet-explorer.hsk.xyz",
+    isTestnet: true,
+  },
+];
+
+/// To support a token, just add the token details to this array;
+
+export const GriffinSupportedTokens = [
+  {
+    address: "0xb8F355f10569FD2A765296161d082Cc37c5843c2",
+    symbol: "tHSK",
+    name: "Test HSK",
+    decimals: 18,
+    chainId: "eip155:133",
+  },
+  {
+    address: "0xc4C2841367016C9e2652Fecc49bBA9229787bA82",
+    symbol: "tUSDC",
+    name: "Test USDC",
+    decimals: 6,
+    chainId: "eip155:133",
+  },
+];

@@ -11,6 +11,7 @@ import { type IChainClient } from "../blockchain/IChainClient";
 import { ChainService } from "@/services/ChainService";
 import { AppError } from "@/middleware/errorHandler";
 import { logger } from "@/utils/logger";
+import { GriffinSupportedTokens } from "@/utils/utils";
 
 /** 0.5% default slippage tolerance */
 const DEFAULT_SLIPPAGE_BPS = 50n;
@@ -56,7 +57,7 @@ export class SwapSettler implements ISettler {
       };
     }
 
-    const chainService = new ChainService();
+    const chainService = new ChainService(GriffinSupportedTokens);
     const tokenInfo = await chainService.getTokenInfo(intent.fromToken, intent.fromChain);
     const decimals = tokenInfo?.decimals ?? 18;
     const amountIn = ethers.parseUnits(intent.amount, decimals);
@@ -95,7 +96,7 @@ export class SwapSettler implements ISettler {
     }
 
     // Resolve decimals for both tokens
-    const chainService = new ChainService();
+    const chainService = new ChainService(GriffinSupportedTokens);
     const [fromTokenInfo, toTokenInfo] = await Promise.all([
       chainService.getTokenInfo(intent.fromToken, intent.fromChain),
       chainService.getTokenInfo(intent.toToken, intent.toChain),
