@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAccount, useSignMessage } from "wagmi";
+import { useAccount, useSignTypedData } from "wagmi";
 import { TOKENS } from "../config";
 import { useQuote } from "../hooks/useQuote";
 import { useIntent } from "../hooks/useIntent";
@@ -7,12 +7,11 @@ import { IntentStatus } from "./IntentStatus";
 
 export function SwapForm() {
   const { address, isConnected } = useAccount();
-  const { signMessageAsync } = useSignMessage();
+  const { signTypedDataAsync } = useSignTypedData();
 
   const [amount, setAmount] = useState("");
   const [recipient, setRecipient] = useState("");
 
-  // Fixed: send tHSK, receive tUSDC
   const fromToken = TOKENS.tHSK.address;
   const toToken = TOKENS.tUSDC.address;
 
@@ -30,7 +29,7 @@ export function SwapForm() {
       amount,
       recipient,
       userAddress: address,
-      signMessage: (msg) => signMessageAsync({ message: msg }),
+      signTypedData: (args) => signTypedDataAsync(args as any),
     });
   }
 
