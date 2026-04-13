@@ -1,6 +1,5 @@
 import { type ChainInfo, type TokenInfo } from "../types";
 import { AppError } from "../middleware/errorHandler";
-import { getStellarTokens } from "@/utils/utils";
 
 export class ChainService {
   /* 
