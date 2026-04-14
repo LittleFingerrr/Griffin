@@ -1,6 +1,11 @@
 export type { IChainClient } from "./IChainClient";
 export type { IDexClient, DexQuote } from "./IDexClient";
-export type { IBridgeClient, BridgeRoute, BridgeStep, BridgeStepTransaction } from "./IBridgeClient";
+export type {
+  IBridgeClient,
+  BridgeRoute,
+  BridgeStep,
+  BridgeStepTransaction,
+} from "./IBridgeClient";
 export { EvmClient } from "./evm/EvmClient";
 export { DexClient } from "./evm/DexClient";
 export { StellarClient } from "./stellar/StellarClient";

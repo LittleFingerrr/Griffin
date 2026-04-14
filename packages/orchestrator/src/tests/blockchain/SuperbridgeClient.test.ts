@@ -23,12 +23,12 @@ function stubFetch(mock: jest.Mock) {
 // ---------------------------------------------------------------------------
 
 const FROM_CHAIN = "eip155:1";
-const TO_CHAIN   = "eip155:133";
+const TO_CHAIN = "eip155:133";
 const FROM_TOKEN = "0xFromToken";
-const TO_TOKEN   = "0xToToken";
-const AMOUNT     = "1000000000000000000";
-const SENDER     = "0xSenderAddress";
-const RECIPIENT  = "0xRecipientAddress";
+const TO_TOKEN = "0xToToken";
+const AMOUNT = "1000000000000000000";
+const SENDER = "0xSenderAddress";
+const RECIPIENT = "0xRecipientAddress";
 
 const makeSbQuote = (overrides: Record<string, unknown> = {}) => ({
   id: "route-123",
@@ -132,8 +132,8 @@ describe("SuperbridgeClient.getRoutes", () => {
     await client.getRoutes(FROM_CHAIN, TO_CHAIN, FROM_TOKEN, TO_TOKEN, AMOUNT);
 
     const body = JSON.parse(spy.mock.calls[0][1]?.body as string);
-    expect(body.fromChainId).toBe(1);   // eip155:1 → 1
-    expect(body.toChainId).toBe(133);   // eip155:133 → 133
+    expect(body.fromChainId).toBe(1); // eip155:1 → 1
+    expect(body.toChainId).toBe(133); // eip155:133 → 133
   });
 
   it("throws on API error response", async () => {
@@ -150,9 +150,9 @@ describe("SuperbridgeClient.getRoutes", () => {
 
 describe("SuperbridgeClient.getStepTransaction", () => {
   it("throws when route is not in cache", async () => {
-    await expect(
-      client.getStepTransaction("unknown-route", 0, SENDER, RECIPIENT),
-    ).rejects.toThrow("not found in cache");
+    await expect(client.getStepTransaction("unknown-route", 0, SENDER, RECIPIENT)).rejects.toThrow(
+      "not found in cache",
+    );
   });
 
   it("returns approval tx calldata for approval step without API call", async () => {
@@ -203,9 +203,9 @@ describe("SuperbridgeClient.getStepTransaction", () => {
     stubFetch(mockFetch(200, makeRoutesResponse([makeSbQuote()])));
     await client.getRoutes(FROM_CHAIN, TO_CHAIN, FROM_TOKEN, TO_TOKEN, AMOUNT);
 
-    await expect(
-      client.getStepTransaction("route-123", 99, SENDER, RECIPIENT),
-    ).rejects.toThrow("does not exist");
+    await expect(client.getStepTransaction("route-123", 99, SENDER, RECIPIENT)).rejects.toThrow(
+      "does not exist",
+    );
   });
 });
 

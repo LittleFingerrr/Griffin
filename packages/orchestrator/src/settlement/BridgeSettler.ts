@@ -218,9 +218,7 @@ export class BridgeSettler implements ISettler {
 
       if (routes.length > 0) {
         // Pick the route with the highest amountOut (best deal for recipient)
-        const best = routes.reduce((a, b) =>
-          BigInt(b.amountOut) > BigInt(a.amountOut) ? b : a,
-        );
+        const best = routes.reduce((a, b) => (BigInt(b.amountOut) > BigInt(a.amountOut) ? b : a));
         return { bridge, route: best };
       }
     }

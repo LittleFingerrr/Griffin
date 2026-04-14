@@ -1,6 +1,10 @@
 import { BridgeSettler } from "../../settlement/BridgeSettler";
 import { SettlerType } from "../../settlement/ISettler";
-import { type IBridgeClient, type BridgeRoute, type BridgeStepTransaction } from "../../blockchain/IBridgeClient";
+import {
+  type IBridgeClient,
+  type BridgeRoute,
+  type BridgeStepTransaction,
+} from "../../blockchain/IBridgeClient";
 import { type IChainClient } from "../../blockchain/IChainClient";
 import { type Intent, IntentStatus } from "../../types";
 import { ethers } from "ethers";
@@ -10,13 +14,13 @@ import { ethers } from "ethers";
 // ---------------------------------------------------------------------------
 
 const FROM_CHAIN = "eip155:1";
-const TO_CHAIN   = "eip155:133";
+const TO_CHAIN = "eip155:133";
 const FROM_TOKEN = "0xFromToken";
-const TO_TOKEN   = "0xToToken";
-const RECIPIENT  = "0xRecipient";
-const SENDER     = "0xSender";
-const TX_HASH    = "0xbridgehash";
-const ROUTE_ID   = "route-abc";
+const TO_TOKEN = "0xToToken";
+const RECIPIENT = "0xRecipient";
+const SENDER = "0xSender";
+const TX_HASH = "0xbridgehash";
+const ROUTE_ID = "route-abc";
 
 const makeIntent = (overrides: Partial<Intent> = {}): Intent => ({
   id: "intent-1",
@@ -47,7 +51,12 @@ const makeRoute = (overrides: Partial<BridgeRoute> = {}): BridgeRoute => ({
   estimatedTimeSeconds: 300,
   feesUsd: "1.50",
   steps: [
-    { index: 0, description: "Bridge via superbridge", chainId: FROM_CHAIN, requiresApproval: false },
+    {
+      index: 0,
+      description: "Bridge via superbridge",
+      chainId: FROM_CHAIN,
+      requiresApproval: false,
+    },
   ],
   ...overrides,
 });
@@ -100,7 +109,9 @@ const makeSettler = (
 describe("BridgeSettler.canSettle", () => {
   it("declines same-chain intents", async () => {
     const { settler } = makeSettler();
-    const result = await settler.canSettle(makeIntent({ fromChain: FROM_CHAIN, toChain: FROM_CHAIN }));
+    const result = await settler.canSettle(
+      makeIntent({ fromChain: FROM_CHAIN, toChain: FROM_CHAIN }),
+    );
     expect(result.capable).toBe(false);
     expect(result.reason).toMatch(/Same-chain/);
   });
@@ -149,7 +160,11 @@ describe("BridgeSettler.canSettle", () => {
     const intent = makeIntent();
     await settler.canSettle(intent);
     expect(bridge.getRoutes).toHaveBeenCalledWith(
-      FROM_CHAIN, TO_CHAIN, FROM_TOKEN, TO_TOKEN, intent.amount,
+      FROM_CHAIN,
+      TO_CHAIN,
+      FROM_TOKEN,
+      TO_TOKEN,
+      intent.amount,
     );
   });
 });
@@ -203,7 +218,7 @@ describe("BridgeSettler.settle", () => {
   });
 
   it("picks the route with the highest amountOut across multiple routes", async () => {
-    const lowRoute  = makeRoute({ routeId: "low",  amountOut: "900000000000000000" });
+    const lowRoute = makeRoute({ routeId: "low", amountOut: "900000000000000000" });
     const highRoute = makeRoute({ routeId: "high", amountOut: "990000000000000000" });
     const bridge = makeBridgeClient([lowRoute, highRoute]);
     const { settler } = makeSettler([bridge]);

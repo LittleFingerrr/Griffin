@@ -1,4 +1,9 @@
-import { type IBridgeClient, type BridgeRoute, type BridgeStep, type BridgeStepTransaction } from "../IBridgeClient";
+import {
+  type IBridgeClient,
+  type BridgeRoute,
+  type BridgeStep,
+  type BridgeStepTransaction,
+} from "../IBridgeClient";
 import { logger } from "../../utils/logger";
 
 const BASE_URL = "https://api.superbridge.app";
@@ -114,15 +119,15 @@ export class SuperbridgeClient implements IBridgeClient {
     amount: string,
   ): Promise<BridgeRoute[]> {
     const fromChainId = this.chainIdToNumeric(fromChain);
-    const toChainId   = this.chainIdToNumeric(toChain);
+    const toChainId = this.chainIdToNumeric(toChain);
 
     const body = {
       fromChainId,
       toChainId,
       fromTokenAddress: fromToken,
-      toTokenAddress:   toToken,
+      toTokenAddress: toToken,
       amount,
-      sender:    this.senderAddress,
+      sender: this.senderAddress,
       recipient: this.senderAddress, // overridden per-intent in getStepTransaction
     };
 
@@ -140,30 +145,47 @@ export class SuperbridgeClient implements IBridgeClient {
       let stepIndex = 0;
 
       if (q.revokeTokenApproval) {
-        steps.push({ index: stepIndex++, description: "Revoke existing token allowance", chainId: fromChain, requiresApproval: false });
+        steps.push({
+          index: stepIndex++,
+          description: "Revoke existing token allowance",
+          chainId: fromChain,
+          requiresApproval: false,
+        });
       }
       if (q.tokenApproval) {
-        steps.push({ index: stepIndex++, description: "Approve token for bridge", chainId: fromChain, requiresApproval: true });
+        steps.push({
+          index: stepIndex++,
+          description: "Approve token for bridge",
+          chainId: fromChain,
+          requiresApproval: true,
+        });
       }
-      steps.push({ index: stepIndex, description: `Bridge via ${q.provider.name}`, chainId: fromChain, requiresApproval: false });
+      steps.push({
+        index: stepIndex,
+        description: `Bridge via ${q.provider.name}`,
+        chainId: fromChain,
+        requiresApproval: false,
+      });
 
       routes.push({
-        routeId:              q.id,
-        provider:             q.provider.name,
+        routeId: q.id,
+        provider: q.provider.name,
         fromChain,
         toChain,
         fromToken,
         toToken,
-        amountIn:             q.amount,
-        amountOut:            q.estimatedReceived,
+        amountIn: q.amount,
+        amountOut: q.estimatedReceived,
         estimatedTimeSeconds: q.estimatedTimeSeconds,
-        feesUsd:              q.fees.totalUsd,
+        feesUsd: q.fees.totalUsd,
         steps,
       });
     }
 
     logger.info("SuperbridgeClient routes fetched", {
-      fromChain, toChain, count: routes.length,
+      fromChain,
+      toChain,
+      count: routes.length,
     });
 
     return routes;
@@ -185,7 +207,7 @@ export class SuperbridgeClient implements IBridgeClient {
     }
 
     const steps = this.buildStepList(quote);
-    const step  = steps[stepIndex];
+    const step = steps[stepIndex];
     if (!step) {
       throw new Error(`Step ${stepIndex} does not exist for route ${routeId}`);
     }
@@ -199,9 +221,9 @@ export class SuperbridgeClient implements IBridgeClient {
     } else {
       // Initiating bridge transaction — fetch fresh calldata with correct recipient
       const data = await this.post<SbStepTxResponse>("/v1/get_step_transaction", {
-        id:        quote.id,
-        action:    "initiate",
-        provider:  quote.provider.name,
+        id: quote.id,
+        action: "initiate",
+        provider: quote.provider.name,
         submitter: sender,
         recipient,
       });
@@ -209,10 +231,10 @@ export class SuperbridgeClient implements IBridgeClient {
     }
 
     return {
-      chainId:  this.numericToChainId(quote.fromChainId),
-      to:       tx.to,
-      data:     tx.data,
-      value:    tx.value,
+      chainId: this.numericToChainId(quote.fromChainId),
+      to: tx.to,
+      data: tx.data,
+      value: tx.value,
       gasLimit: tx.gas,
     };
   }
@@ -263,10 +285,12 @@ export class SuperbridgeClient implements IBridgeClient {
   // Helpers
   // -------------------------------------------------------------------------
 
-  private buildStepList(quote: SbRouteQuote): Array<{ type: "revokeApproval" | "approval" | "bridge" }> {
+  private buildStepList(
+    quote: SbRouteQuote,
+  ): Array<{ type: "revokeApproval" | "approval" | "bridge" }> {
     const steps: Array<{ type: "revokeApproval" | "approval" | "bridge" }> = [];
     if (quote.revokeTokenApproval) steps.push({ type: "revokeApproval" });
-    if (quote.tokenApproval)       steps.push({ type: "approval" });
+    if (quote.tokenApproval) steps.push({ type: "approval" });
     steps.push({ type: "bridge" });
     return steps;
   }
