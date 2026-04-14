@@ -12,10 +12,13 @@ import { HealthService } from "./services/HealthService";
 import { SettlementEngine } from "./settlement/SettlementEngine";
 import { InventorySettler } from "./settlement/InventorySettler";
 import { SwapSettler } from "./settlement/SwapSettler";
+import { BridgeSettler } from "./settlement/BridgeSettler";
 import { EvmClient } from "./blockchain/evm/EvmClient";
 import { DexClient } from "./blockchain/evm/DexClient";
+import { SuperbridgeClient } from "./blockchain/superbridge/SuperbridgeClient";
 import { type IChainClient } from "./blockchain/IChainClient";
 import { type IDexClient } from "./blockchain/IDexClient";
+import { type IBridgeClient } from "./blockchain/IBridgeClient";
 
 // Import routes
 import intentRoutes from "./routes/intents";
@@ -60,10 +63,25 @@ if (config.blockchain.hashkey.operatorPrivateKey && config.blockchain.hashkey.de
   logger.warn("GRIFFIN_DEX_ADDRESS not set — SwapSettler will decline all intents");
 }
 
+// Bridge clients — ordered by preference
+const bridgeClients: IBridgeClient[] = [];
+
+if (config.external.superbridge.apiKey && config.blockchain.hashkey.operatorPrivateKey) {
+  bridgeClients.push(
+    new SuperbridgeClient({
+      apiKey: config.external.superbridge.apiKey,
+      senderAddress: config.blockchain.hashkey.vaultAddress,
+    }),
+  );
+} else {
+  logger.warn("SUPERBRIDGE_API_KEY not set — BridgeSettler will decline all cross-chain intents");
+}
+
 const routeService = new RouteService();
 const settlementEngine = new SettlementEngine([
   new InventorySettler(chainClients, config.blockchain.hashkey.vaultAddress),
   new SwapSettler(dexClients, chainClients),
+  new BridgeSettler(bridgeClients, chainClients, config.blockchain.hashkey.vaultAddress),
 ]);
 const intentService = new IntentService(settlementEngine);
 // -----------------------------------------------------------------------------

@@ -66,6 +66,9 @@ export const config = {
       clientId: process.env.THIRDWEB_CLIENT_ID || "",
       secretKey: process.env.THIRDWEB_SECRET_KEY || "",
     },
+    superbridge: {
+      apiKey: process.env.SUPERBRIDGE_API_KEY || "",
+    },
   },
 
   security: {

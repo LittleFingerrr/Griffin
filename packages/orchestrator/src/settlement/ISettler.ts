@@ -5,6 +5,7 @@ import { type Intent, type RouteInfo } from "../types";
 export enum SettlerType {
   SWAP = "swap",
   INVENTORY = "inventory",
+  BRIDGE = "bridge",
   SOLVER = "solver",
 }
 
