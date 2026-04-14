@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { type ethers } from "ethers";
 import {
   type ISettler,
   type SettleabilityCheck,
@@ -178,7 +178,7 @@ export class BridgeSettler implements ISettler {
       executedRoute: {
         id: `bridge-${intent.id}`,
         serviceId: bridge.name,
-        steps: route.steps.map((s) => ({
+        steps: route.steps.map((_s) => ({
           type: "bridge" as const,
           provider: bridge.name,
           fromChain: intent.fromChain,
