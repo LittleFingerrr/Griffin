@@ -48,6 +48,14 @@ export class SwapSettler implements ISettler {
    *   3. The quoted output is greater than zero
    */
   async canSettle(intent: Intent): Promise<SettleabilityCheck> {
+    // Swaps are same-chain only — cross-chain intents should use BridgeSettler
+    if (intent.fromChain !== intent.toChain) {
+      return {
+        capable: false,
+        reason: `Cross-chain intent detected (${intent.fromChain} → ${intent.toChain}), defaulting to bridge`,
+      };
+    }
+
     const dex = this.dexClients.get(intent.toChain);
 
     if (!dex) {
